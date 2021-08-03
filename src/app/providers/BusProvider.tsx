@@ -1,10 +1,12 @@
 import React, { PropsWithChildren, useContext } from 'react';
 
 import { Observable, Subject } from 'rxjs';
+import { Event } from '../../common/messages/event';
+import { Message } from '../../common/messages/message';
 
 export interface BusProviderContext {
-  events$: Observable<any>;
-  commands$: Subject<any>;
+  events$: Observable<Event>;
+  commands$: Subject<Message>;
 }
 
 const Context = React.createContext<BusProviderContext | undefined>(undefined);
