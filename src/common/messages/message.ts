@@ -1,4 +1,7 @@
-import { Event } from './event';
-import { Command } from './command';
+export interface Message {
+  messageType: string;
+}
 
-export type Message = Event | Command;
+export function isMessage(message: Record<string, any>): message is Message {
+  return 'messageType' in message;
+}

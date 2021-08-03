@@ -1,3 +1,6 @@
-export interface Event {
+import { Message } from './message';
+
+export interface Event extends Message {
+  messageType: 'event';
   eventType: string;
 }
