@@ -11,9 +11,9 @@
 // import { clientsClaim } from 'workbox-core';
 // import { ExpirationPlugin } from 'workbox-expiration';
 import { } from 'workbox-precaching';
+import { CryptoModuleBuilder } from './modules/crypto';
 // import { registerRoute } from 'workbox-routing';
 // import { StaleWhileRevalidate } from 'workbox-strategies';
-import { main } from './worker/main';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -81,4 +81,6 @@ self.addEventListener('message', (event) => {
   }
 });
 
-main();
+const cryptoModuleBuilder = new CryptoModuleBuilder();
+const cryptoModule = cryptoModuleBuilder.build();
+cryptoModule.createServiceWorkerAdapter(self);
