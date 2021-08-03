@@ -57,16 +57,6 @@ export function register(config?: Config) {
         registerValidSW(swUrl, config);
       }
     });
-
-    navigator.serviceWorker.addEventListener('message', event => {
-      // event is a MessageEvent object
-      console.log(`The service worker sent me a message - ${event.type}: ${event.data}`);
-    });
-
-
-    navigator.serviceWorker.ready.then(registration => {
-      registration.active?.postMessage('Hi service worker');
-    });
   }
 }
 

@@ -14,31 +14,35 @@ export interface ServiceWorkerContext {
 const Context = React.createContext<ServiceWorkerContext | undefined>(undefined);
 
 export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
-  const events$ = new Subject<Event>();
-  const commands$ = new Subject<Command>();
+  const eventsContainer = useRef(new Subject<Event>());
+  const commandsContainer = useRef(new Subject<Command>());
   const serviceWorkerContainer = useRef<ServiceWorker | null>(null);
 
   useEffect(() => {
     const messageListener = (event: MessageEvent) => {
+      debug('Service worker -> App:', event.data);
       if (isMessage(event.data)) {
-        debug('Service worker -> App:', event.data);
       }
     };
-
     navigator.serviceWorker.addEventListener('message', messageListener);
-  
     navigator.serviceWorker.ready.then(registration => {
       serviceWorkerContainer.current = registration.active;
     });
 
+    const commandsSubscription = commandsContainer.current.subscribe(c => {
+      debug('App -> Service worker:', c);
+      serviceWorkerContainer.current?.postMessage(c);
+    });
+
     return () => {
       navigator.serviceWorker.removeEventListener('message', messageListener);
+      commandsSubscription.unsubscribe();
     };
   }, []);
 
   const value: ServiceWorkerContext = {
-    events$,
-    commands$,
+    events$: eventsContainer.current,
+    commands$: commandsContainer.current,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
