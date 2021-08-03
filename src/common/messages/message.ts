@@ -3,5 +3,5 @@ export interface Message {
 }
 
 export function isMessage(message: Record<string, any>): message is Message {
-  return 'messageType' in message;
+  return typeof message === 'object' && 'messageType' in message;
 }
