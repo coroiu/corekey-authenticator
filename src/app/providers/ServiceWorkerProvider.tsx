@@ -1,10 +1,9 @@
-import React, { PropsWithChildren, useContext, useEffect, useRef } from 'react';
+import React, { PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
 
 import { Observable, Subject } from 'rxjs';
 import { debug } from '../../common/debug';
-import { Event } from '../../common/messages/event';
+import { Event, isEvent } from '../../common/messages/event';
 import { Command } from '../../common/messages/command';
-import { isMessage } from '../../common/messages/message';
 
 export interface ServiceWorkerContext {
   events$: Observable<Event>;
@@ -21,7 +20,8 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
   useEffect(() => {
     const messageListener = (event: MessageEvent) => {
       debug('Service worker -> App:', event.data);
-      if (isMessage(event.data)) {
+      if (isEvent(event.data)) {
+        eventsContainer.current.next(event.data);
       }
     };
     navigator.serviceWorker.addEventListener('message', messageListener);
@@ -47,13 +47,23 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
-export function useEventBus() {
+export function useEventBus<T>(initialValue: T, operator: (events$: Observable<Event>) => Observable<T>) {
   const value = useContext(Context);
-  if (value === undefined) {
-    throw new Error('A required provider is not present in this context.');
-  }
+  const [state, setState] = useState<T>(initialValue);
 
-  return value.events$;
+  useEffect(() => {
+    if (value === undefined) {
+      throw new Error('A required provider is not present in this context.');
+    }
+    
+    const subscription = operator(value?.events$).subscribe(v => {
+      setState(v);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [value, operator]);
+
+  return state;
 }
 
 export function useCommandBus() {
@@ -62,6 +72,6 @@ export function useCommandBus() {
     throw new Error('A required provider is not present in this context.');
   }
 
-  return value.commands$;
+  return <T extends Command>(command: T) => value.commands$.next(command);
 }
 
