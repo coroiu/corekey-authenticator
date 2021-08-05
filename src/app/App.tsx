@@ -1,22 +1,15 @@
-import React from 'react';
-import { ServiceWorkerProvider } from './providers/ServiceWorkerProvider';
-import AccountList from './components/AccountList';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import NewAccountPage from './pages/account/NewAccountPage';
+import React from "react";
+import { ServiceWorkerProvider } from "./providers/ServiceWorkerProvider";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { theme } from "./Theme";
+import Pages from "./pages";
 
 function App() {
   return (
     <ServiceWorkerProvider>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/account/new">
-            <NewAccountPage></NewAccountPage>
-          </Route>
-          <Route path="/">
-            <AccountList></AccountList>
-          </Route>
-        </Switch>
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <Pages></Pages>
+      </ThemeProvider>
     </ServiceWorkerProvider>
   );
 }
