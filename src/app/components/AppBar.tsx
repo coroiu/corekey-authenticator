@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { useHistory } from "react-router";
+import { PropsWithChildren } from "react";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -20,7 +21,11 @@ export interface AppBarProps {
   title: string;
 }
 
-export default function AppBar({ title, isRoot = false }: AppBarProps) {
+export default function AppBar({
+  title,
+  isRoot = false,
+  children = null,
+}: PropsWithChildren<AppBarProps>) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -41,6 +46,7 @@ export default function AppBar({ title, isRoot = false }: AppBarProps) {
         <Typography variant="h6" className={classes.title}>
           {title}
         </Typography>
+        {children}
       </Toolbar>
     </MuiAppBar>
   );
