@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Button from "@material-ui/core/Button";
 import AppBar from "../../components/AppBar";
 import ManualAccountInput from "../../components/ManualAccountInput";
 import { AppTheme } from "../../Theme";
-import Container from "@material-ui/core/Container";
-import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   container: {
@@ -22,7 +22,7 @@ export default function NewAccountPage() {
         <Button color="inherit">Save</Button>
       </AppBar>
       <Container className={classes.container}>
-        <ManualAccountInput onChange={setKey}></ManualAccountInput>
+        <ManualAccountInput onChange={setKey} />
       </Container>
     </>
   );
