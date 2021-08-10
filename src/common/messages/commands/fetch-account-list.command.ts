@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-redeclare */
-import { Command } from '../command';
+import { Request } from "../command";
 
-export interface FetchAccountListCommand extends Command {
-  commandType: 'FetchAccountList';
+export interface FetchAccountListCommand extends Request {
+  requestType: "FetchAccountList";
 }
 
-export function FetchAccountListCommand(command: Omit<FetchAccountListCommand, keyof Command> = {}): FetchAccountListCommand {
-  return {
-    messageType: 'command',
-    commandType: 'FetchAccountList',
-    ...command
-  };
+export function FetchAccountListCommand(
+  command: Omit<FetchAccountListCommand, keyof Request> = {}
+): FetchAccountListCommand {
+  return Request<FetchAccountListCommand>("FetchAccountList", command);
 }
 
-export function isFetchAccountListCommand(command: Command): command is FetchAccountListCommand {
-  return command.commandType === 'FetchAccountList';
+export function isFetchAccountListCommand(
+  command: Request
+): command is FetchAccountListCommand {
+  return command.requestType === "FetchAccountList";
 }

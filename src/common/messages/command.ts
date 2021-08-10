@@ -1,30 +1,24 @@
-import uuid from "uuid";
+import { v4 } from "uuid";
 import { isMessage, Message } from "./message";
 
-export interface Command extends Message {
-  messageType: "command";
-  commandType: string;
-  commandId: string;
+export interface Request extends Message {
+  messageType: "request";
+  requestType: string;
+  requestId: string;
 }
 
-export interface CommandResponse extends Message {
-  messageType: "command";
-  commandType: string;
-  commandId: string;
-}
-
-export function Command<T extends Command>(
-  type: T["commandType"],
-  command: Omit<T, keyof Command>
+export function Request<T extends Request>(
+  type: T["requestType"],
+  command: Omit<T, keyof Request>
 ): T {
   return {
-    messageType: "command",
-    commandType: type,
-    commandId: uuid.v4(),
+    messageType: "request",
+    requestType: type,
+    requestId: v4(),
     ...command,
   } as T;
 }
 
-export function isCommand(message: Record<string, any>): message is Command {
-  return isMessage(message) && message.messageType === "command";
+export function isRequest(message: Record<string, any>): message is Request {
+  return isMessage(message) && message.messageType === "request";
 }

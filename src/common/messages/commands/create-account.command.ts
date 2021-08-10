@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-redeclare */
-import { Command } from "../command";
+import { Request } from "../command";
 
-export interface CreateAccountCommand extends Command {
-  commandType: "CreateAccount";
+export interface CreateAccountCommand extends Request {
+  requestType: "CreateAccount";
   issuer: string;
   account: string;
   key: string;
 }
 
 export function CreateAccountCommand(
-  command: Omit<CreateAccountCommand, keyof Command>
+  command: Omit<CreateAccountCommand, keyof Request>
 ): CreateAccountCommand {
-  return Command<CreateAccountCommand>("CreateAccount", command);
+  return Request<CreateAccountCommand>("CreateAccount", command);
 }
 
 export function isCreateAccountCommand(
-  command: Command
+  command: Request
 ): command is CreateAccountCommand {
-  return command.commandType === "CreateAccount";
+  return command.requestType === "CreateAccount";
 }

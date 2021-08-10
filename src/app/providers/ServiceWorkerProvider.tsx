@@ -9,11 +9,11 @@ import React, {
 import { Observable, Subject } from "rxjs";
 import { debug } from "../../common/debug";
 import { Event, isEvent } from "../../common/messages/event";
-import { Command } from "../../common/messages/command";
+import { Request } from "../../common/messages/command";
 
 export interface ServiceWorkerContext {
   events$: Observable<Event>;
-  commands$: Subject<Command>;
+  commands$: Subject<Request>;
 }
 
 const Context = React.createContext<ServiceWorkerContext | undefined>(
@@ -22,7 +22,7 @@ const Context = React.createContext<ServiceWorkerContext | undefined>(
 
 export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
   const eventsContainer = useRef(new Subject<Event>());
-  const commandsContainer = useRef(new Subject<Command>());
+  const commandsContainer = useRef(new Subject<Request>());
   const serviceWorkerContainer = useRef<ServiceWorker | null>(null);
 
   useEffect(() => {
@@ -83,5 +83,5 @@ export function useCommandBus() {
     throw new Error("A required provider is not present in this context.");
   }
 
-  return <T extends Command>(command: T) => value.commands$.next(command);
+  return <T extends Request>(command: T) => value.commands$.next(command);
 }
