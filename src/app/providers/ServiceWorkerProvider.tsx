@@ -22,7 +22,7 @@ const Context = React.createContext<ServiceWorkerContext | undefined>(
 
 export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
   const eventsContainer = useRef(new Subject<Event>());
-  const commandsContainer = useRef(new Subject<Request>());
+  const requestsContainer = useRef(new Subject<Request>());
   const serviceWorkerContainer = useRef<ServiceWorker | null>(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
       serviceWorkerContainer.current = registration.active;
     });
 
-    const commandsSubscription = commandsContainer.current.subscribe((c) => {
+    const commandsSubscription = requestsContainer.current.subscribe((c) => {
       debug("App -> Service worker:", c);
       serviceWorkerContainer.current?.postMessage(c);
     });
@@ -50,7 +50,7 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
 
   const value: ServiceWorkerContext = {
     events$: eventsContainer.current,
-    commands$: commandsContainer.current,
+    commands$: requestsContainer.current,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-redeclare */
 import { Request } from "../command";
 
-export interface CreateAccountCommand extends Request {
+export interface CreateAccountRequest extends Request {
   requestType: "CreateAccount";
   issuer: string;
   account: string;
   key: string;
 }
 
-export function CreateAccountCommand(
-  command: Omit<CreateAccountCommand, keyof Request>
-): CreateAccountCommand {
-  return Request<CreateAccountCommand>("CreateAccount", command);
+export function CreateAccountRequest(
+  command: Omit<CreateAccountRequest, keyof Request>
+): CreateAccountRequest {
+  return Request<CreateAccountRequest>("CreateAccount", command);
 }
 
-export function isCreateAccountCommand(
+export function isCreateAccountRequest(
   command: Request
-): command is CreateAccountCommand {
+): command is CreateAccountRequest {
   return command.requestType === "CreateAccount";
 }

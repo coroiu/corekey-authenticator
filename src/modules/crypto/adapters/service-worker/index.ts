@@ -1,19 +1,19 @@
 import { isRequest } from "../../../../common/messages/command";
-import { isFetchAccountListCommand } from "../../../../common/messages/commands/fetch-account-list.command";
+import { isFetchAccountListRequest } from "../../../../common/messages/commands/fetch-account-list.command";
 import { AccountListFetchedEvent } from "../../../../common/messages/events/account-list-fetched.event";
 
 export class ServiceWorkerAdapter {
   constructor(private scope: ServiceWorkerGlobalScope) {
     scope.addEventListener("message", (event) => {
       if (isRequest(event.data)) {
-        if (isFetchAccountListCommand(event.data)) {
-          this.handleFetchAccountListCommand();
+        if (isFetchAccountListRequest(event.data)) {
+          this.handleFetchAccountListRequest();
         }
       }
     });
   }
 
-  private async handleFetchAccountListCommand() {
+  private async handleFetchAccountListRequest() {
     const clients = await this.scope.clients.matchAll({
       includeUncontrolled: true,
     });
