@@ -7,9 +7,12 @@ import React, {
 } from "react";
 
 import { Observable, Subject } from "rxjs";
+import { wrap } from "comlink";
 import { debug } from "../../common/debug";
+import { ComlinkInitMessage } from "../../common/messages/comlink";
 import { Event, isEvent } from "../../common/messages/event";
 import { Request } from "../../common/messages/procedure";
+import { ServiceWorkerInterface } from "../../service-worker";
 
 export interface ServiceWorkerContext {
   events$: Observable<Event>;
@@ -21,6 +24,7 @@ const Context = React.createContext<ServiceWorkerContext | undefined>(
 );
 
 export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
+  const messageChannelContainer = useRef(new MessageChannel());
   const eventsContainer = useRef(new Subject<Event>());
   const requestsContainer = useRef(new Subject<Request>());
   const serviceWorkerContainer = useRef<ServiceWorker | null>(null);
@@ -35,6 +39,20 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
     navigator.serviceWorker.addEventListener("message", messageListener);
     navigator.serviceWorker.ready.then((registration) => {
       serviceWorkerContainer.current = registration.active;
+
+      // init comlink
+      const initMsg: ComlinkInitMessage = {
+        messageType: "comlink",
+        comlinkMessageType: "init",
+        port: messageChannelContainer.current.port1,
+      };
+      serviceWorkerContainer.current?.postMessage(initMsg, [
+        messageChannelContainer.current.port1,
+      ]);
+      const proxy = wrap<ServiceWorkerInterface>(
+        messageChannelContainer.current.port2
+      );
+      (async () => console.log("initComlink", await proxy.helloWorld()))();
     });
 
     const commandsSubscription = requestsContainer.current.subscribe((c) => {

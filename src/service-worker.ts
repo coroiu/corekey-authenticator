@@ -10,8 +10,10 @@
 
 // import { clientsClaim } from 'workbox-core';
 // import { ExpirationPlugin } from 'workbox-expiration';
-import { } from 'workbox-precaching';
-import { CryptoModuleBuilder } from './modules/crypto';
+import { expose } from "comlink";
+import {} from "workbox-precaching";
+import { isComlinkInitMessage } from "./common/messages/comlink";
+import { CryptoModuleBuilder } from "./modules/crypto";
 // import { registerRoute } from 'workbox-routing';
 // import { StaleWhileRevalidate } from 'workbox-strategies';
 
@@ -73,14 +75,28 @@ const ignored = self.__WB_MANIFEST;
 //   })
 // );
 
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
 const cryptoModuleBuilder = new CryptoModuleBuilder();
 const cryptoModule = cryptoModuleBuilder.build();
 cryptoModule.createServiceWorkerAdapter(self);
+
+const serviceWorkerInterface = {
+  async helloWorld() {
+    return "hej världen";
+  },
+} as const;
+
+export type ServiceWorkerInterface = typeof serviceWorkerInterface;
+
+self.addEventListener("message", (event) => {
+  // This allows the web app to trigger skipWaiting via
+  // registration.waiting.postMessage({type: 'SKIP_WAITING'})
+  if (!event.data) return;
+
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+
+  if (event.data && isComlinkInitMessage(event.data)) {
+    expose(serviceWorkerInterface, event.data.port);
+  }
+});
