@@ -1,33 +1,13 @@
 import { useState } from "react";
-import { filter, map } from "rxjs/operators";
-import { FetchAccountListRequest } from "../../common/messages/commands/fetch-account-list.command";
-import { isAccountListFetchedEvent } from "../../common/messages/events/account-list-fetched.event";
-import {
-  Account,
-  AccountService,
-} from "../../modules/crypto/core/ports/account.service";
-import {
-  useCommandBus,
-  useEventBus,
-  useServiceWorker,
-} from "../providers/ServiceWorkerProvider";
+import { Account } from "../../modules/crypto/core/ports/account.service";
+import { useServiceWorker } from "../providers/ServiceWorkerProvider";
 
 export default function AccountList() {
   const serviceWorker = useServiceWorker();
   const [accounts, setAccounts] = useState<Account[]>([]);
-  // const accounts = useEventBus([], (events$) =>
-  //   events$.pipe(
-  //     filter(isAccountListFetchedEvent),
-  //     map((e) => e.accounts)
-  //   )
-  // );
-  // const dispatch = useCommandBus();
 
   async function fetchList() {
-    setAccounts(
-      (await serviceWorker?.crypto.accountService.getAllAccounts()) ?? []
-    );
-    // dispatch(FetchAccountListRequest());
+    setAccounts(await serviceWorker.crypto.accountService.getAllAccounts());
   }
 
   return (

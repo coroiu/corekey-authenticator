@@ -108,8 +108,7 @@ export function useServiceWorker() {
   }
 
   if (value.modules === null) {
-    console.log("service worker was not present");
-    // throw new Error("Service worker is not present in this context.");
+    throw new Error("Service worker is not present in this context.");
   }
 
   return value.modules;
