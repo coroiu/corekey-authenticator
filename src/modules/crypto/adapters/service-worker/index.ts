@@ -1,4 +1,4 @@
-import { isRequest } from "../../../../common/messages/command";
+import { isRequest } from "../../../../common/messages/procedure";
 import { isFetchAccountListRequest } from "../../../../common/messages/commands/fetch-account-list.command";
 import { AccountListFetchedEvent } from "../../../../common/messages/events/account-list-fetched.event";
 

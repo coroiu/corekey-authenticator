@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-redeclare */
-import { Request } from "../command";
+import { Request } from "../procedure";
 
 export interface FetchAccountListRequest extends Request {
   requestType: "FetchAccountList";

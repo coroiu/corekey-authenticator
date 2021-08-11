@@ -9,7 +9,7 @@ import React, {
 import { Observable, Subject } from "rxjs";
 import { debug } from "../../common/debug";
 import { Event, isEvent } from "../../common/messages/event";
-import { Request } from "../../common/messages/command";
+import { Request } from "../../common/messages/procedure";
 
 export interface ServiceWorkerContext {
   events$: Observable<Event>;
