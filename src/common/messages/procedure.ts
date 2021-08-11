@@ -3,18 +3,24 @@ import { isMessage, Message } from "./message";
 
 export interface Request extends Message {
   messageType: "request";
-  requestType: string;
-  requestId: string;
+  procedureName: string;
+  callId: string;
+}
+
+export interface Response extends Message {
+  messageType: "response";
+  procedureName: string;
+  callId: string;
 }
 
 export function Request<T extends Request>(
-  type: T["requestType"],
+  type: T["procedureName"],
   command: Omit<T, keyof Request>
 ): T {
   return {
     messageType: "request",
-    requestType: type,
-    requestId: v4(),
+    procedureName: type,
+    callId: v4(),
     ...command,
   } as T;
 }

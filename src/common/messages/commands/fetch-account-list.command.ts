@@ -2,7 +2,7 @@
 import { Request } from "../procedure";
 
 export interface FetchAccountListRequest extends Request {
-  requestType: "FetchAccountList";
+  procedureName: "FetchAccountList";
 }
 
 export function FetchAccountListRequest(
@@ -14,5 +14,5 @@ export function FetchAccountListRequest(
 export function isFetchAccountListRequest(
   command: Request
 ): command is FetchAccountListRequest {
-  return command.requestType === "FetchAccountList";
+  return command.procedureName === "FetchAccountList";
 }

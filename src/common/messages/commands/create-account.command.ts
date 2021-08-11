@@ -2,7 +2,7 @@
 import { Request } from "../procedure";
 
 export interface CreateAccountRequest extends Request {
-  requestType: "CreateAccount";
+  procedureName: "CreateAccount";
   issuer: string;
   account: string;
   key: string;
@@ -17,5 +17,5 @@ export function CreateAccountRequest(
 export function isCreateAccountRequest(
   command: Request
 ): command is CreateAccountRequest {
-  return command.requestType === "CreateAccount";
+  return command.procedureName === "CreateAccount";
 }
