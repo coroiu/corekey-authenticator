@@ -7,21 +7,20 @@ import React, {
 } from "react";
 
 import { Observable, Subject } from "rxjs";
-import { wrap } from "comlink";
+import { wrap, Remote } from "comlink";
 import { debug } from "../../common/debug";
 import { ComlinkInitMessage } from "../../common/messages/comlink";
 import { Event, isEvent } from "../../common/messages/event";
 import { Request } from "../../common/messages/procedure";
-import { ServiceWorkerInterface } from "../../service-worker";
+import { ServiceWorkerModules } from "../../service-worker";
 
 export interface ServiceWorkerContext {
   events$: Observable<Event>;
   commands$: Subject<Request>;
+  modules: Remote<ServiceWorkerModules> | null;
 }
 
-const Context = React.createContext<ServiceWorkerContext | undefined>(
-  undefined
-);
+const Context = React.createContext<ServiceWorkerContext | null>(null);
 
 export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
   const messageChannelContainer = useRef(new MessageChannel());
@@ -37,6 +36,7 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
       }
     };
     navigator.serviceWorker.addEventListener("message", messageListener);
+
     navigator.serviceWorker.ready.then((registration) => {
       serviceWorkerContainer.current = registration.active;
 
@@ -49,10 +49,6 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
       serviceWorkerContainer.current?.postMessage(initMsg, [
         messageChannelContainer.current.port1,
       ]);
-      const proxy = wrap<ServiceWorkerInterface>(
-        messageChannelContainer.current.port2
-      );
-      (async () => console.log("initComlink", await proxy.helloWorld()))();
     });
 
     const commandsSubscription = requestsContainer.current.subscribe((c) => {
@@ -69,6 +65,7 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
   const value: ServiceWorkerContext = {
     events$: eventsContainer.current,
     commands$: requestsContainer.current,
+    modules: wrap<ServiceWorkerModules>(messageChannelContainer.current.port2),
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
@@ -81,7 +78,7 @@ export function useEventBus<T>(
   const [state, setState] = useState<T>(initialValue);
 
   useEffect(() => {
-    if (value === undefined) {
+    if (value === null) {
       throw new Error("A required provider is not present in this context.");
     }
 
@@ -97,9 +94,23 @@ export function useEventBus<T>(
 
 export function useCommandBus() {
   const value = useContext(Context);
-  if (value === undefined) {
+  if (value === null) {
     throw new Error("A required provider is not present in this context.");
   }
 
   return <T extends Request>(command: T) => value.commands$.next(command);
+}
+
+export function useServiceWorker() {
+  const value = useContext(Context);
+  if (value === null) {
+    throw new Error("A required provider is not present in this context.");
+  }
+
+  if (value.modules === null) {
+    console.log("service worker was not present");
+    // throw new Error("Service worker is not present in this context.");
+  }
+
+  return value.modules;
 }

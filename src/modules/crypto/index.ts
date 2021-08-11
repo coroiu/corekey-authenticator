@@ -1,13 +1,20 @@
-import { DependencyMap } from '../../common/dependency-map';
-import { ServiceWorkerAdapter } from './adapters/service-worker';
+import { DependencyMap } from "../../common/dependency-map";
+import { ServiceWorkerAdapter } from "./adapters/service-worker";
+import { AccountService } from "./core/ports/account.service";
 
 interface ModuleDependencies {}
 
 export class CryptoModule {
-  constructor(private dependencies: DependencyMap<ModuleDependencies>) {}
+  private readonly accountService: AccountService;
 
-  createServiceWorkerAdapter(scope: ServiceWorkerGlobalScope): ServiceWorkerAdapter {
-    return new ServiceWorkerAdapter(scope);
+  constructor(private dependencies: DependencyMap<ModuleDependencies>) {
+    this.accountService = new AccountService();
+  }
+
+  createServiceWorkerAdapter(
+    scope: ServiceWorkerGlobalScope
+  ): ServiceWorkerAdapter {
+    return new ServiceWorkerAdapter(scope, this.accountService);
   }
 }
 

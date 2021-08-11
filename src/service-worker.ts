@@ -10,7 +10,7 @@
 
 // import { clientsClaim } from 'workbox-core';
 // import { ExpirationPlugin } from 'workbox-expiration';
-import { expose } from "comlink";
+import { expose, proxy } from "comlink";
 import {} from "workbox-precaching";
 import { isComlinkInitMessage } from "./common/messages/comlink";
 import { CryptoModuleBuilder } from "./modules/crypto";
@@ -77,15 +77,13 @@ const ignored = self.__WB_MANIFEST;
 
 const cryptoModuleBuilder = new CryptoModuleBuilder();
 const cryptoModule = cryptoModuleBuilder.build();
-cryptoModule.createServiceWorkerAdapter(self);
+const cryptoAdapter = cryptoModule.createServiceWorkerAdapter(self);
 
-const serviceWorkerInterface = {
-  async helloWorld() {
-    return "hej världen";
-  },
+const modules = {
+  crypto: proxy(cryptoAdapter),
 } as const;
 
-export type ServiceWorkerInterface = typeof serviceWorkerInterface;
+export type ServiceWorkerModules = typeof modules;
 
 self.addEventListener("message", (event) => {
   // This allows the web app to trigger skipWaiting via
@@ -97,6 +95,6 @@ self.addEventListener("message", (event) => {
   }
 
   if (event.data && isComlinkInitMessage(event.data)) {
-    expose(serviceWorkerInterface, event.data.port);
+    expose(modules, event.data.port);
   }
 });
