@@ -9,6 +9,7 @@ import ManualAccountInput, {
 } from "../../components/ManualAccountInput";
 import { AppTheme } from "../../Theme";
 import { useHistory } from "react-router";
+import { useServiceWorker } from "../../providers/ServiceWorkerProvider";
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   container: {
@@ -19,10 +20,13 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 export default function NewAccountPage() {
   const classes = useStyles();
   const history = useHistory();
-  const [account, setAccount] = useState<AccountInformation>();
+  const serviceWorker = useServiceWorker();
+  const [account, setAccount] = useState<AccountInformation | null>(null);
   const { data, error, run, isPending, isFulfilled } = useAsync({
     async deferFn() {
-      console.log("save", account);
+      if (account !== null) {
+        serviceWorker.crypto.accountService.createNewAccount(account);
+      }
     },
   });
 
@@ -33,7 +37,7 @@ export default function NewAccountPage() {
   return (
     <>
       <AppBar title="New account">
-        <Button color="inherit" onClick={run}>
+        <Button color="inherit" disabled={account === null} onClick={run}>
           Save
         </Button>
       </AppBar>

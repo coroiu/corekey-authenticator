@@ -15,7 +15,7 @@ export interface ManualAccountInputProps {
 }
 
 export interface AccountInformation {
-  account: string;
+  name: string;
   issuer: string;
   key: string;
 }
@@ -26,7 +26,7 @@ export default function ManualAccountInput({
   const classes = useStyles();
   const [accountInformation, setAccountInformation] =
     useState<AccountInformation>({
-      account: "",
+      name: "",
       issuer: "",
       key: "",
     });
@@ -53,10 +53,10 @@ export default function ManualAccountInput({
       />
       <TextField
         className={classes.textInput}
-        id="account"
-        label="Account"
-        value={accountInformation.account}
-        onChange={handleChange("account")}
+        id="name"
+        label="Name"
+        value={accountInformation.name}
+        onChange={handleChange("name")}
         variant="outlined"
         fullWidth
       />
