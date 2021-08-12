@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Account } from "../../modules/crypto/core/ports/account.service";
+import { Account } from "../../modules/crypto/core/ports/account.service/account.model";
 import { useServiceWorker } from "../providers/ServiceWorkerProvider";
 
 export default function AccountList() {

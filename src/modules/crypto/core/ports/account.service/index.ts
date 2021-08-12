@@ -1,8 +1,4 @@
-export interface Account {
-  id: string;
-  issuer: string;
-  name: string;
-}
+import { Account } from "./account.model";
 
 export class AccountService {
   async getAllAccounts(): Promise<Account[]> {
