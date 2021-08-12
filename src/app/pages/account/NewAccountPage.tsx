@@ -1,24 +1,14 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Button from "@material-ui/core/Button";
-import { useAsync } from "react-async";
-import AppBar from "../../components/AppBar";
-import ManualAccountInput, {
-  AccountInformation,
-} from "../../components/ManualAccountInput";
-import { AppTheme } from "../../Theme";
-import { useHistory } from "react-router";
-import { useServiceWorker } from "../../providers/ServiceWorkerProvider";
+import Button from '@material-ui/core/Button';
+import React, { useState } from 'react';
+import { useAsync } from 'react-async';
+import { useHistory } from 'react-router';
 
-const useStyles = makeStyles((theme: AppTheme) => ({
-  container: {
-    paddingTop: theme.spacing(2),
-  },
-}));
+import AppBar from '../../components/AppBar';
+import MainContainer from '../../components/MainContainer';
+import ManualAccountInput, { AccountInformation } from '../../components/ManualAccountInput';
+import { useServiceWorker } from '../../providers/ServiceWorkerProvider';
 
 export default function NewAccountPage() {
-  const classes = useStyles();
   const history = useHistory();
   const serviceWorker = useServiceWorker();
   const [account, setAccount] = useState<AccountInformation | null>(null);
@@ -41,9 +31,9 @@ export default function NewAccountPage() {
           Save
         </Button>
       </AppBar>
-      <Container className={classes.container}>
+      <MainContainer>
         <ManualAccountInput onChange={setAccount} />
-      </Container>
+      </MainContainer>
     </>
   );
 }

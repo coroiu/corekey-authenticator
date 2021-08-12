@@ -1,10 +1,12 @@
-import React from "react";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import AccountList from "../components/AccountList";
-import AppBar from "../components/AppBar";
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router";
+import Fab from '@material-ui/core/Fab';
+import { makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import React from 'react';
+import { useHistory } from 'react-router';
+
+import AccountList from '../components/AccountList';
+import AppBar from '../components/AppBar';
+import MainContainer from '../components/MainContainer';
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -21,7 +23,9 @@ export default function HomePage() {
   return (
     <>
       <AppBar title="CoreKey Authenticator" isRoot={true}></AppBar>
-      <AccountList></AccountList>
+      <MainContainer>
+        <AccountList></AccountList>
+      </MainContainer>
 
       <Fab
         color="primary"

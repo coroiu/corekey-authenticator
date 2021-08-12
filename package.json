@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "nodemon -e ts,tsx -i build --exec npm run start:dev:nodemon",
-    "start:dev:nodemon": "npm run build && serve -s build",
+    "start:dev:nodemon": "npm run build && serve -s build -l 3000",
     "start:dev:hot-reload": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

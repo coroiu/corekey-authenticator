@@ -1,24 +1,23 @@
-import { useState } from "react";
-import { Account } from "../../modules/crypto/core/ports/account.service/account.model";
-import { useServiceWorker } from "../providers/ServiceWorkerProvider";
+import { useEffect, useState } from 'react';
+
+import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
+import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 
 export default function AccountList() {
   const serviceWorker = useServiceWorker();
   const [accounts, setAccounts] = useState<Account[]>([]);
 
-  async function fetchList() {
-    setAccounts(await serviceWorker.crypto.accountService.getAllAccounts());
-  }
+  useEffect(() => {
+    serviceWorker.crypto.accountService.getAllAccounts().then(setAccounts);
+  }, [serviceWorker, setAccounts]);
 
   return (
     <div>
-      <h1>Account list</h1>
       <ul>
         {accounts.map((account) => (
           <li>{account.name}</li>
         ))}
       </ul>
-      <button onClick={fetchList}>Refresh</button>
     </div>
   );
 }

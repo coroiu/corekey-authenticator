@@ -1,9 +1,17 @@
-import React from "react";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import NewAccountPage from "./account/NewAccountPage";
-import HomePage from "./HomePage";
+import React from 'react';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+
+import { useServiceWorkerStatus } from '../providers/ServiceWorkerProvider';
+import NewAccountPage from './account/NewAccountPage';
+import HomePage from './HomePage';
 
 export default function Pages() {
+  const { isReady } = useServiceWorkerStatus();
+
+  if (!isReady) {
+    return <>Loading...</>;
+  }
+
   return (
     <BrowserRouter>
       <Switch>
