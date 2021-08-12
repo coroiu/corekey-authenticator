@@ -10,7 +10,7 @@
 
 // import { clientsClaim } from 'workbox-core';
 // import { ExpirationPlugin } from 'workbox-expiration';
-import { expose, proxy } from "comlink";
+import { expose, proxy, Endpoint } from "comlink";
 import {} from "workbox-precaching";
 import { isComlinkInitMessage } from "./common/messages/comlink";
 import { CryptoModuleBuilder } from "./modules/crypto";
@@ -75,6 +75,53 @@ const ignored = self.__WB_MANIFEST;
 //   })
 // );
 
+class ClientProxy implements Endpoint {
+  private listeners: EventListenerOrEventListenerObject[] = [];
+
+  constructor() {
+    self.addEventListener("message", this.handleEvent);
+  }
+
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: {}
+  ): void {
+    this.listeners.push(listener);
+  }
+
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: {}
+  ): void {
+    const index = this.listeners.indexOf(listener);
+    if (index > -1) {
+      this.listeners.splice(index, 1);
+    }
+  }
+
+  async postMessage(
+    message: any,
+    transfer: Transferable[] = []
+  ): Promise<void> {
+    const clients = await self.clients.matchAll({
+      includeUncontrolled: true,
+    });
+    clients.forEach((c) => c.postMessage(message, transfer));
+  }
+
+  private handleEvent = (event: ExtendableMessageEvent) => {
+    this.listeners.forEach((l) => {
+      if ("handleEvent" in l) {
+        l.handleEvent(event);
+      } else {
+        l(event);
+      }
+    });
+  };
+}
+
 const cryptoModuleBuilder = new CryptoModuleBuilder();
 const cryptoModule = cryptoModuleBuilder.build();
 const cryptoAdapter = cryptoModule.createServiceWorkerAdapter(self);
@@ -93,8 +140,6 @@ self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
-
-  if (event.data && isComlinkInitMessage(event.data)) {
-    expose(modules, event.data.port);
-  }
 });
+
+expose(modules, new ClientProxy());
