@@ -1,13 +1,18 @@
+import { AccountRepository } from "../account.repository";
 import { Account } from "./account.model";
 
 export class AccountService {
+  constructor(private accounts: AccountRepository) {}
+
   async getAllAccounts(): Promise<Account[]> {
-    return [
-      { id: "fake-1", issuer: "fake-1", name: "fake-1" },
-      { id: "fake-2", issuer: "fake-1", name: "fake-2" },
-      { id: "fake-3", issuer: "fake-1", name: "fake-3" },
-      { id: "fake-4", issuer: "fake-1", name: "fake-4" },
-      { id: "fake-5", issuer: "fake-1", name: "fake-5" },
-    ];
+    const allAccounts = await this.accounts.getAll();
+    return allAccounts.map(
+      (a) =>
+        ({
+          id: a.id,
+          issuer: a.issuer,
+          name: a.name,
+        } as Account)
+    );
   }
 }
