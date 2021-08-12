@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 }));
 
 export interface ManualAccountInputProps {
-  onChange?: (key: string) => void;
+  onChange?: (key: AccountInformation) => void;
 }
 
 export interface AccountInformation {
@@ -37,6 +37,7 @@ export default function ManualAccountInput({
         ...accountInformation,
         [property]: event.target.value,
       }));
+      onChange(accountInformation);
     };
 
   return (
