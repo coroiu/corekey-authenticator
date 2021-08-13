@@ -7,8 +7,21 @@ import { useHistory } from 'react-router';
 import AccountList from '../components/AccountList';
 import AppBar from '../components/AppBar';
 import MainContainer from '../components/MainContainer';
+import { AppTheme } from '../Theme';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: AppTheme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  },
+  appBar: {
+    flex: "0 0",
+  },
+  mainContainer: {
+    backgroundColor: theme.palette.grey[200],
+    flex: "1 1",
+  },
   fab: {
     position: "absolute",
     bottom: theme.spacing(2),
@@ -21,9 +34,13 @@ export default function HomePage() {
   const history = useHistory();
 
   return (
-    <>
-      <AppBar title="CoreKey Authenticator" isRoot={true}></AppBar>
-      <MainContainer>
+    <div className={classes.root}>
+      <AppBar
+        title="CoreKey Authenticator"
+        isRoot={true}
+        className={classes.appBar}
+      ></AppBar>
+      <MainContainer className={classes.mainContainer}>
         <AccountList></AccountList>
       </MainContainer>
 
@@ -35,6 +52,6 @@ export default function HomePage() {
       >
         <AddIcon />
       </Fab>
-    </>
+    </div>
   );
 }

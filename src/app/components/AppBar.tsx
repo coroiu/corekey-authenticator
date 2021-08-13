@@ -1,11 +1,11 @@
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import MuiAppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { useHistory } from "react-router";
-import { PropsWithChildren } from "react";
+import MuiAppBar from '@material-ui/core/AppBar';
+import IconButton from '@material-ui/core/IconButton';
+import { makeStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { PropsWithChildren } from 'react';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -17,11 +17,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface AppBarProps {
+  className?: string;
   isRoot?: boolean;
   title: string;
 }
 
 export default function AppBar({
+  className,
   title,
   isRoot = false,
   children = null,
@@ -30,7 +32,7 @@ export default function AppBar({
   const history = useHistory();
 
   return (
-    <MuiAppBar position="static">
+    <MuiAppBar position="static" className={className}>
       <Toolbar>
         {isRoot ? null : (
           <IconButton

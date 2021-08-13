@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
+import AccountCard from './AccountCard';
 
 export default function AccountList() {
   const serviceWorker = useServiceWorker();
@@ -12,12 +13,10 @@ export default function AccountList() {
   }, [serviceWorker, setAccounts]);
 
   return (
-    <div>
-      <ul>
-        {accounts.map((account) => (
-          <li>{account.name}</li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {accounts.map((account) => (
+        <AccountCard account={account} />
+      ))}
+    </>
   );
 }

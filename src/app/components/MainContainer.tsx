@@ -10,13 +10,18 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   },
 }));
 
+export interface MainContainerProps {
+  className?: string;
+}
+
 export default function MainContainer({
+  className = "",
   children = null,
-}: PropsWithChildren<{}>) {
+}: PropsWithChildren<MainContainerProps>) {
   const classes = useStyles();
 
   return (
-    <Container className={classes.container}>
+    <Container className={`${classes.container} ${className}`}>
       <>{children ?? null}</>
     </Container>
   );
