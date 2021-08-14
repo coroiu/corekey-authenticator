@@ -1,7 +1,7 @@
-import { Account as CoreAccount } from "../../account";
-import { AccountRepository } from "../account.repository";
-import { Account } from "./account.model";
-import { NewAccount } from "./new-account.model";
+import { Account as CoreAccount } from '../../account';
+import { AccountRepository } from '../account.repository';
+import { Account } from './account.model';
+import { NewAccount } from './new-account.model';
 
 export class AccountService {
   constructor(private accounts: AccountRepository) {}

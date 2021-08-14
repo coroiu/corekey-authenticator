@@ -44,8 +44,8 @@ export class Memento<State extends MementoState = MementoState> {
   }
 
   constructor(
-    private id: string,
-    private version: number,
+    public readonly id: string,
+    public readonly version: number,
     public readonly state: State
   ) {}
 }

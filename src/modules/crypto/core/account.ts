@@ -1,8 +1,8 @@
 import { Entity } from '../../../common/ddd/entity';
 import { Memento } from '../../../common/ddd/memento';
 
-interface State {
-  readonly id: string;
+export interface State {
+  readonly accountId: string;
   readonly name: string;
   readonly issuer: string;
   readonly key: string;
@@ -19,7 +19,7 @@ export class Account extends Entity {
 
   static fromMemento(memento: Memento): Account {
     const state = AccountMemento.from(memento).state;
-    return new Account(state.id, state.name, state.issuer, state.key);
+    return new Account(state.accountId, state.name, state.issuer, state.key);
   }
 
   constructor(id: string, name: string, issuer: string, key: string) {
@@ -32,7 +32,7 @@ export class Account extends Entity {
 
   override toMemento(): AccountMemento {
     return new AccountMemento({
-      id: this.id,
+      accountId: this.id,
       name: this.name,
       issuer: this.issuer,
       key: this.key,

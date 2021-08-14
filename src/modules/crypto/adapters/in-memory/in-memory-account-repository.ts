@@ -1,6 +1,7 @@
-import * as uuid from "uuid";
-import { Account } from "../../core/account";
-import { AccountRepository } from "../../core/ports/account.repository";
+import * as uuid from 'uuid';
+
+import { Account } from '../../core/account';
+import { AccountRepository } from '../../core/ports/account.repository';
 
 export class InMemoryAccountRepository implements AccountRepository {
   private accounts = new Map<string, Account>();
