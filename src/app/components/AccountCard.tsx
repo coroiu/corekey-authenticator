@@ -20,11 +20,17 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   info: {
     flex: "1 1",
     padding: theme.spacing(2),
+    minWidth: 0,
   },
   issuer: {
     fontSize: "1.3rem",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
-  name: {},
+  name: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
   menu: {
     flex: "0 1",
     padding: theme.spacing(2),
