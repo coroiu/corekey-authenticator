@@ -1,14 +1,18 @@
-import React from "react";
-import { ServiceWorkerProvider } from "./providers/ServiceWorkerProvider";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { theme } from "./Theme";
-import Pages from "./pages";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/core/styles';
+import React from 'react';
+
+import Pages from './pages';
+import { ServiceWorkerProvider } from './providers/ServiceWorkerProvider';
+import { theme } from './Theme';
 
 function App() {
   return (
     <ServiceWorkerProvider>
       <ThemeProvider theme={theme}>
-        <Pages></Pages>
+        <CssBaseline>
+          <Pages></Pages>
+        </CssBaseline>
       </ThemeProvider>
     </ServiceWorkerProvider>
   );
