@@ -1,5 +1,10 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
+import 'workbox-precaching';
+
+import { Endpoint, expose, proxy } from 'comlink';
+
+import { CryptoModuleBuilder } from './modules/crypto';
 
 // This service worker can be customized!
 // See https://developers.google.com/web/tools/workbox/modules
@@ -10,10 +15,7 @@
 
 // import { clientsClaim } from 'workbox-core';
 // import { ExpirationPlugin } from 'workbox-expiration';
-import { expose, proxy, Endpoint } from "comlink";
-import {} from "workbox-precaching";
-import { isComlinkInitMessage } from "./common/messages/comlink";
-import { CryptoModuleBuilder } from "./modules/crypto";
+// import { isComlinkInitMessage } from "./common/messages/comlink";
 // import { registerRoute } from 'workbox-routing';
 // import { StaleWhileRevalidate } from 'workbox-strategies';
 
@@ -123,7 +125,8 @@ class ClientProxy implements Endpoint {
 }
 
 const cryptoModuleBuilder = new CryptoModuleBuilder();
-cryptoModuleBuilder.withInMemoryAccounts();
+// cryptoModuleBuilder.withInMemoryAccounts();
+cryptoModuleBuilder.withIndexedDbAccounts();
 const cryptoModule = cryptoModuleBuilder.build();
 const cryptoAdapter = cryptoModule.createServiceWorkerAdapter(self);
 

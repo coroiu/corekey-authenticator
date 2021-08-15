@@ -1,9 +1,9 @@
-import { update } from 'idb-keyval';
+import { get, update } from 'idb-keyval';
 import * as uuid from 'uuid';
 
 import { Account } from '../../core/account';
 import { AccountRepository } from '../../core/ports/account.repository';
-import { createSchema, mapAccountToDb } from './functions';
+import { createSchema, mapAccountFromDb, mapAccountToDb } from './functions';
 import { DbSchema } from './schema';
 
 const dbKey = "accounts";
@@ -11,8 +11,17 @@ const dbKey = "accounts";
 export class IndexedDbAccountRepository implements AccountRepository {
   constructor() {}
 
-  getAll(): Promise<Account[]> {
-    throw new Error("Method not implemented.");
+  async getAll(): Promise<Account[]> {
+    const schema: DbSchema | undefined = await get(dbKey);
+    if (schema === undefined) {
+      return [];
+    }
+
+    if (schema.version !== 0) {
+      throw new Error("Unkown schema version.");
+    }
+
+    return Object.values(schema.accounts).map(mapAccountFromDb);
   }
 
   generateId(): Promise<string> {
