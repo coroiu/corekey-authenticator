@@ -5,7 +5,13 @@ import { Account } from '../../modules/crypto/core/ports/account.service/account
 import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
-  root: {},
+  root: {
+    padding: theme.spacing(2),
+  },
+  name: {
+    fontSize: "1.3rem",
+  },
+  issuer: {},
 }));
 
 export interface AccountCardProps {
@@ -17,8 +23,16 @@ export default function AccountCard({ account }: AccountCardProps) {
 
   return (
     <Paper className={classes.root}>
-      <Typography variant="h3">{account.name}</Typography>
-      <Typography variant="subtitle1">{account.issuer}</Typography>
+      <Typography variant="h4" component="h3" className={classes.name}>
+        {account.name}
+      </Typography>
+      <Typography
+        color="textSecondary"
+        variant="subtitle1"
+        className={classes.issuer}
+      >
+        {account.issuer}
+      </Typography>
     </Paper>
   );
 }

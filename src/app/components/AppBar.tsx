@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    textAlign: ({ isRoot }: AppBarProps) => (isRoot ? "center" : "left"),
   },
 }));
 
@@ -22,13 +23,9 @@ export interface AppBarProps {
   title: string;
 }
 
-export default function AppBar({
-  className,
-  title,
-  isRoot = false,
-  children = null,
-}: PropsWithChildren<AppBarProps>) {
-  const classes = useStyles();
+export default function AppBar(props: PropsWithChildren<AppBarProps>) {
+  const { className, title, isRoot = false, children = null } = props;
+  const classes = useStyles(props);
   const history = useHistory();
 
   return (
