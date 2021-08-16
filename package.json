@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@otplib/preset-default": "^12.0.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -41,7 +42,7 @@
   },
   "scripts": {
     "start": "nodemon -e ts,tsx -i build --exec npm run start:dev:nodemon",
-    "start:dev:nodemon": "npm run build && serve -s build -l 3000",
+    "start:dev:nodemon": "npm run build && serve -n -s build -l 3000",
     "start:dev:hot-reload": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

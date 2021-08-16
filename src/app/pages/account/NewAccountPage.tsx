@@ -3,15 +3,16 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-async';
 import { useHistory } from 'react-router';
 
+import { NewAccount } from '../../../modules/crypto/core/ports/account.service/new-account.model';
 import AppBar from '../../components/AppBar';
 import MainContainer from '../../components/MainContainer';
-import ManualAccountInput, { AccountInformation } from '../../components/ManualAccountInput';
+import ManualAccountInput from '../../components/ManualAccountInput';
 import { useServiceWorker } from '../../providers/ServiceWorkerProvider';
 
 export default function NewAccountPage() {
   const history = useHistory();
   const serviceWorker = useServiceWorker();
-  const [account, setAccount] = useState<AccountInformation | null>(null);
+  const [account, setAccount] = useState<NewAccount | null>(null);
   const { data, error, run, isPending, isFulfilled } = useAsync({
     async deferFn() {
       if (account !== null) {

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core";
-import { noop } from "../utils";
-import { AppTheme } from "../Theme";
+import { makeStyles } from '@material-ui/core';
+import TextField, { TextFieldProps } from '@material-ui/core/TextField';
+import React, { useState } from 'react';
+
+import { Key } from '../../modules/crypto/core/ports/account.service/key.model';
+import { NewAccount } from '../../modules/crypto/core/ports/account.service/new-account.model';
+import { AppTheme } from '../Theme';
+import { noop } from '../utils';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   textInput: {
@@ -11,31 +14,40 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 }));
 
 export interface ManualAccountInputProps {
-  onChange?: (key: AccountInformation) => void;
-}
-
-export interface AccountInformation {
-  name: string;
-  issuer: string;
-  key: string;
+  onChange?: (key: NewAccount) => void;
 }
 
 export default function ManualAccountInput({
   onChange = noop,
 }: ManualAccountInputProps) {
   const classes = useStyles();
-  const [accountInformation, setAccountInformation] =
-    useState<AccountInformation>({
-      name: "",
-      issuer: "",
-      key: "",
-    });
+  const [accountInformation, setAccountInformation] = useState<NewAccount>({
+    name: "",
+    issuer: "",
+    key: {
+      type: "tkey",
+      secret: "",
+    },
+  });
   const handleChange =
-    (property: keyof AccountInformation): TextFieldProps["onChange"] =>
+    (property: keyof NewAccount): TextFieldProps["onChange"] =>
     (event) => {
       setAccountInformation((accountInformation) => ({
         ...accountInformation,
         [property]: event.target.value,
+      }));
+      onChange(accountInformation);
+    };
+
+  const handleKeyChange =
+    (property: keyof Key): TextFieldProps["onChange"] =>
+    (event) => {
+      setAccountInformation((accountInformation) => ({
+        ...accountInformation,
+        key: {
+          ...accountInformation.key,
+          [property]: event.target.value,
+        },
       }));
       onChange(accountInformation);
     };
@@ -62,10 +74,10 @@ export default function ManualAccountInput({
       />
       <TextField
         className={classes.textInput}
-        id="key"
-        label="Key"
-        value={accountInformation.key}
-        onChange={handleChange("key")}
+        id="secret"
+        label="secret"
+        value={accountInformation.key.secret}
+        onChange={handleKeyChange("secret")}
         variant="outlined"
         fullWidth
       />
