@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { AppTheme } from '../Theme';
 import { fakeCode } from '../utils';
-import Code from './Code';
+import Code, { CodeProps } from './Code';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   root: {
@@ -46,12 +46,28 @@ export interface AccountCardProps {
 
 export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
-  const [code, setCode] = useState({ generatedAt: new Date(), value: "" });
+  const [codeProps, setCodeProps] = useState<CodeProps>({
+    code: {
+      generatedAt: new Date(),
+      value: "",
+    },
+    color: undefined,
+  });
 
   useEffect(() => {
-    setCode({ generatedAt: new Date(), value: fakeCode(6) });
+    function genCode() {
+      const c = fakeCode(6);
+      const d = new Date();
+      const h = Math.ceil(Math.random() * 360);
+      setCodeProps({
+        code: { generatedAt: d, value: c },
+        color: `hsla(${h}, 50%, 50%, 0.15)`,
+      });
+    }
+
+    genCode();
     const interval = setInterval(() => {
-      setCode({ generatedAt: new Date(), value: fakeCode(6) });
+      genCode();
     }, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -76,7 +92,7 @@ export default function AccountCard({ account }: AccountCardProps) {
         </div>
       </div>
       <div className={classes.code}>
-        <Code code={code} />
+        <Code {...codeProps} />
       </div>
     </Paper>
   );
