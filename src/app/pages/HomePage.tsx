@@ -5,8 +5,8 @@ import React from 'react';
 import { useHistory } from 'react-router';
 
 import AccountList from '../components/AccountList';
-import AppBar from '../components/AppBar';
 import MainContainer from '../components/MainContainer';
+import MainHeader from '../components/MainHeader';
 import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -35,11 +35,7 @@ export default function HomePage() {
 
   return (
     <div className={classes.root}>
-      <AppBar
-        title="CoreKey Authenticator"
-        isRoot={true}
-        className={classes.appBar}
-      ></AppBar>
+      <MainHeader className={classes.appBar} />
       <MainContainer className={classes.mainContainer}>
         <AccountList></AccountList>
       </MainContainer>
