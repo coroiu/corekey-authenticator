@@ -46,12 +46,12 @@ export interface AccountCardProps {
 
 export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState({ generatedAt: new Date(), value: "" });
 
   useEffect(() => {
-    setCode(fakeCode(6));
+    setCode({ generatedAt: new Date(), value: fakeCode(6) });
     const interval = setInterval(() => {
-      setCode(fakeCode(6));
+      setCode({ generatedAt: new Date(), value: fakeCode(6) });
     }, 10000);
     return () => clearInterval(interval);
   }, []);
