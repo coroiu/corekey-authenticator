@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { AppTheme } from '../Theme';
-import { fakeCode } from '../utils';
 import Code, { CodeProps } from './Code';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -48,30 +47,33 @@ export interface AccountCardProps {
 export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
   const serviceWorker = useServiceWorker();
-  const [codeProps, setCodeProps] = useState<CodeProps>({
-    code: {
-      generatedAt: new Date(),
-      value: "",
-    },
-    color: undefined,
-  });
+  const [codeProps, setCodeProps] = useState<CodeProps | null>(null);
 
   useEffect(() => {
-    function generateCode() {
-      const c = fakeCode(6);
+    let timeout: ReturnType<typeof setTimeout>;
+
+    async function generateCode(): Promise<void> {
+      const c =
+        await serviceWorker.crypto.accountService.generateCodeForAccount(
+          account.id
+        );
+      if (c === undefined) {
+        return setCodeProps(null);
+      }
+
       const d = new Date();
       const h = Math.ceil(Math.random() * 360);
       setCodeProps({
-        code: { generatedAt: d, value: c },
+        code: { generatedAt: d, value: c.value },
         color: `hsla(${h}, 50%, 50%, 0.15)`,
       });
+
+      console.log(c);
+      timeout = setTimeout(generateCode, 10000);
     }
 
     generateCode();
-    const interval = setInterval(() => {
-      generateCode();
-    }, 10000);
-    return () => clearInterval(interval);
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
@@ -94,7 +96,7 @@ export default function AccountCard({ account }: AccountCardProps) {
         </div>
       </div>
       <div className={classes.code}>
-        <Code {...codeProps} />
+        {codeProps === null ? null : <Code {...codeProps} />}
       </div>
     </Paper>
   );

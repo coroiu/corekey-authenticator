@@ -42,8 +42,12 @@
   },
   "scripts": {
     "start": "nodemon -e ts,tsx -i build --exec npm run start:dev:nodemon",
-    "start:dev:nodemon": "npm run build && serve -n -s build -l 3000",
+    "start:dev:watch": "npm run watch & npm run serve",
+    "start:dev:nodemon": "nodemon -e ts,tsx -i build --exec npm run start:dev:nodemon:script",
+    "start:dev:nodemon:script": "GENERATE_SOURCEMAP=true npm run build && npm run serve",
     "start:dev:hot-reload": "react-scripts start",
+    "serve": "serve -n -s build -l 3000",
+    "watch": "cra-build-watch",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -69,6 +73,7 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.1.8",
     "@types/uuid": "^8.3.1",
+    "cra-build-watch": "^3.4.0",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2"
   }
