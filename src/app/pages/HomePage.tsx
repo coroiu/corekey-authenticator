@@ -27,7 +27,7 @@ export default function HomePage() {
   return (
     <div className={classes.root}>
       <MainHeader className={classes.appBar} />
-      <MainContainer className={classes.mainContainer}>
+      <MainContainer className={classes.mainContainer} topSpacingType="margin">
         <AccountList></AccountList>
       </MainContainer>
     </div>
