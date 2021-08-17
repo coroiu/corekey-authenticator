@@ -5,7 +5,11 @@ export abstract class Key {
     public readonly secret: string,
     public readonly length: number,
     public readonly method: string
-  ) {}
+  ) {
+    if (!secret.trim()) {
+      throw new Error("Empty secret not allowed.");
+    }
+  }
 }
 
 export class HKey extends Key {
