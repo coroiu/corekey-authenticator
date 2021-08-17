@@ -13,7 +13,7 @@ export class OptlibCryptoRespository implements CryptoRepository {
     if (key instanceof TKey) {
       return new Code(
         authenticator.generate(key.secret),
-        new Date(authenticator.timeRemaining())
+        new Date(Date.now() + authenticator.timeRemaining() * 1000)
       );
     } else if (key instanceof HKey) {
       return new Code(hotp.generate(key.secret, key.next()), undefined);
