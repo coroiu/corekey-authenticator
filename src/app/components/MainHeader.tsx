@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   root: {
     display: "flex",
     paddingTop: theme.spacing(2),
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.palette.background.default,
   },
   left: {
     flex: "1 1",

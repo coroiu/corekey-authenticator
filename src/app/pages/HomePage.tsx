@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     flex: "0 0",
   },
   mainContainer: {
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.palette.background.default,
     flex: "1 1",
   },
   fab: {

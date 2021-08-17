@@ -71,7 +71,7 @@ export default function AccountCard({ account }: AccountCardProps) {
       );
       setCodeProps({
         code: code.value,
-        color: `hsla(${hue}, 50%, 50%, 0.15)`,
+        color: `hsla(${hue}, 25%, 50%, 0.15)`,
       });
 
       timeout = setTimeout(generateCode, code.expiresAt.getTime() - Date.now());
