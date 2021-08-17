@@ -14,8 +14,8 @@ export default function Pages() {
   }
 
   return (
-    <MainLayout>
-      <BrowserRouter>
+    <BrowserRouter>
+      <MainLayout>
         <Switch>
           <Route exact path="/">
             <HomePage></HomePage>
@@ -27,7 +27,7 @@ export default function Pages() {
             <Redirect to="/"></Redirect>
           </Route>
         </Switch>
-      </BrowserRouter>
-    </MainLayout>
+      </MainLayout>
+    </BrowserRouter>
   );
 }
