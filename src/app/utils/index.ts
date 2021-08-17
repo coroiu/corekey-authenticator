@@ -9,3 +9,11 @@ export function fakeCode(length: number) {
   }
   return result;
 }
+
+// From https://stackoverflow.com/a/19303725
+// Absolutely not cryptographically secure, but works
+// for determinisistically calculating seemingly random colors.
+export function random(seed: number): number {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}

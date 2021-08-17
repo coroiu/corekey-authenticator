@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { AppTheme } from '../Theme';
+import { random } from '../utils';
 import Code, { CodeProps } from './Code';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -53,26 +54,33 @@ export default function AccountCard({ account }: AccountCardProps) {
     let timeout: ReturnType<typeof setTimeout>;
 
     async function generateCode(): Promise<void> {
-      const c =
+      const code =
         await serviceWorker.crypto.accountService.generateCodeForAccount(
           account.id
         );
-      if (c === undefined) {
+      if (code === undefined) {
         return setCodeProps(null);
       }
 
-      const d = new Date();
-      const h = Math.ceil(Math.random() * 360);
+      if (code.expiresAt === undefined) {
+        return setCodeProps({ code: code.value });
+      }
+
+      const hue = Math.ceil(
+        random(Math.ceil(code.expiresAt.getTime() / 1000)) * 360
+      );
       setCodeProps({
-        code: { generatedAt: d, value: c.value },
-        color: `hsla(${h}, 50%, 50%, 0.15)`,
+        code: code.value,
+        color: `hsla(${hue}, 50%, 50%, 0.15)`,
       });
 
-      console.log(c);
-      timeout = setTimeout(generateCode, 10000);
+      timeout = setTimeout(generateCode, code.expiresAt.getTime() - Date.now());
     }
 
-    generateCode();
+    if (account.key.type === "tkey") {
+      generateCode();
+    }
+
     return () => clearTimeout(timeout);
   }, []);
 

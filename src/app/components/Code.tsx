@@ -32,7 +32,6 @@ const useSegmentStyles = makeStyles((theme: AppTheme) => ({
 }));
 
 interface SegmentProps {
-  codeKey: string;
   character: string;
   gap: boolean;
   index: number;
@@ -51,7 +50,7 @@ function Segment(props: SegmentProps) {
 }
 
 function AnimatedSegment(props: SegmentProps) {
-  const { codeKey, index } = props;
+  const { index } = props;
   const classes = useSegmentStyles(props);
 
   const transitions = useTransition(props, {
@@ -60,7 +59,6 @@ function AnimatedSegment(props: SegmentProps) {
     enter: { opacity: 1, y: "0%" },
     leave: { opacity: 0, y: "50%" },
     delay: index * 50,
-    key: codeKey,
   });
 
   return (
@@ -84,22 +82,18 @@ const useCodeStyles = makeStyles((theme: AppTheme) => ({
 }));
 
 export interface CodeProps {
-  code: {
-    generatedAt: Date;
-    value: string;
-  };
+  code: string;
   color?: string;
 }
 
 export default function Code({ code, color }: CodeProps) {
   const classes = useCodeStyles();
-  const characters = Array.from(code.value);
+  const characters = Array.from(code);
 
   return (
     <div className={classes.root}>
       {characters.map((character, index) => (
         <AnimatedSegment
-          codeKey={code.generatedAt.toString()}
           character={character}
           index={index}
           color={color}
