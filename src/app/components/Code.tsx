@@ -27,7 +27,10 @@ const useSegmentStyles = makeStyles((theme: AppTheme) => ({
   },
   character: {
     fontSize: "1rem",
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight:
+      theme.palette.type === "light"
+        ? theme.typography.fontWeightBold
+        : theme.typography.fontWeightLight,
   },
 }));
 

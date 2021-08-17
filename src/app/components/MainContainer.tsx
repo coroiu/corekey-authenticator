@@ -6,7 +6,8 @@ import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   container: {
-    paddingTop: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    overflowY: "auto",
   },
 }));
 

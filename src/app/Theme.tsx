@@ -1,8 +1,12 @@
 import { createTheme, darken, lighten, responsiveFontSizes } from '@material-ui/core/styles';
 
 const colors = {
-  primary: "#FB8500",
-  secondary: "#023047",
+  // primary: "#F24333", // orange
+  // primary: "#BA1B1D",
+  primary: "#840032",
+  // secondary: "#01072c", // darker
+  // primary: "#C31C1F", // lighter
+  secondary: "#01093B",
 };
 
 let lightTheme = createTheme({
@@ -26,6 +30,21 @@ let lightTheme = createTheme({
     fontSize: 12,
   },
 });
+lightTheme.overrides = {
+  MuiBottomNavigation: {
+    root: {
+      background: "none",
+    },
+  },
+  MuiBottomNavigationAction: {
+    root: {
+      color: lightTheme.palette.text.primary,
+      "&.Mui-selected": {
+        color: lightTheme.palette.text.primary,
+      },
+    },
+  },
+};
 lightTheme = responsiveFontSizes(lightTheme);
 
 let darkTheme = createTheme({
@@ -38,8 +57,8 @@ let darkTheme = createTheme({
       main: colors.secondary,
     },
     background: {
-      default: darken(colors.secondary, 0.6),
-      paper: darken(colors.secondary, 0.2),
+      default: darken(colors.secondary, 0.7),
+      paper: colors.secondary,
     },
     text: {
       disabled: darken(colors.secondary, 0.5),
@@ -49,6 +68,21 @@ let darkTheme = createTheme({
     fontSize: 12,
   },
 });
+darkTheme.overrides = {
+  MuiBottomNavigation: {
+    root: {
+      background: "none",
+    },
+  },
+  MuiBottomNavigationAction: {
+    root: {
+      color: darkTheme.palette.common.white,
+      "&.Mui-selected": {
+        color: darkTheme.palette.common.white,
+      },
+    },
+  },
+};
 darkTheme = responsiveFontSizes(darkTheme);
 
 const theme = lightTheme;

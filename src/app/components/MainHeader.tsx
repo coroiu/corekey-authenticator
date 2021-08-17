@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   center: {
     flex: "0 0",
     whiteSpace: "nowrap",
-    color: theme.palette.text.secondary,
+    color: theme.palette.primary.main,
   },
   right: {
     flex: "1 1",
