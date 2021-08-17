@@ -4,6 +4,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useEffect, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
+import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { AppTheme } from '../Theme';
 import { fakeCode } from '../utils';
 import Code, { CodeProps } from './Code';
@@ -46,6 +47,7 @@ export interface AccountCardProps {
 
 export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
+  const serviceWorker = useServiceWorker();
   const [codeProps, setCodeProps] = useState<CodeProps>({
     code: {
       generatedAt: new Date(),
@@ -55,7 +57,7 @@ export default function AccountCard({ account }: AccountCardProps) {
   });
 
   useEffect(() => {
-    function genCode() {
+    function generateCode() {
       const c = fakeCode(6);
       const d = new Date();
       const h = Math.ceil(Math.random() * 360);
@@ -65,9 +67,9 @@ export default function AccountCard({ account }: AccountCardProps) {
       });
     }
 
-    genCode();
+    generateCode();
     const interval = setInterval(() => {
-      genCode();
+      generateCode();
     }, 10000);
     return () => clearInterval(interval);
   }, []);

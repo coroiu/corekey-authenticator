@@ -20,6 +20,11 @@ export class AccountService {
           id: a.id,
           issuer: a.issuer,
           name: a.name,
+          key: {
+            type: a.key instanceof CoreHKey ? "hkey" : "tkey",
+            length: a.key.length,
+            method: a.key.method,
+          },
         } as Account)
     );
   }
@@ -51,7 +56,7 @@ export class AccountService {
       return undefined;
     }
 
-    const code = account.generateCode(this.crypto);
+    const code = this.crypto.generateCode(account.key);
     return {
       expiresAt: code.expiresAt,
       value: code.value,
