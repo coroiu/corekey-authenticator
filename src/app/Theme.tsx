@@ -6,7 +6,8 @@ const colors = {
   primary: "#840032",
   // secondary: "#01072c", // darker
   // primary: "#C31C1F", // lighter
-  secondary: "#01093B",
+  // secondary: "#01093B",
+  secondary: "#1F1F1F",
 };
 
 let lightTheme = createTheme({
@@ -85,8 +86,8 @@ darkTheme.overrides = {
 };
 darkTheme = responsiveFontSizes(darkTheme);
 
-const theme = lightTheme;
-// const theme = darkTheme;
+// const theme = lightTheme;
+const theme = darkTheme;
 
 export type AppTheme = typeof theme;
 
