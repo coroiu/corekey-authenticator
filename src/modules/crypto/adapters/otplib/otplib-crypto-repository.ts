@@ -16,7 +16,7 @@ export class OptlibCryptoRespository implements CryptoRepository {
         new Date(authenticator.timeRemaining())
       );
     } else if (key instanceof HKey) {
-      return new Code(hotp.generate(key.secret, key.next()), null);
+      return new Code(hotp.generate(key.secret, key.next()), undefined);
     }
 
     throw new Error("Key not supported");

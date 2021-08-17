@@ -127,6 +127,7 @@ class ClientProxy implements Endpoint {
 const cryptoModuleBuilder = new CryptoModuleBuilder();
 // cryptoModuleBuilder.withInMemoryAccounts();
 cryptoModuleBuilder.withIndexedDbAccounts();
+cryptoModuleBuilder.withOptlibCrypto();
 const cryptoModule = cryptoModuleBuilder.build();
 const cryptoAdapter = cryptoModule.createServiceWorkerAdapter(self);
 

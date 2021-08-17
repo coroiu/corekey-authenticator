@@ -10,6 +10,10 @@ export class InMemoryAccountRepository implements AccountRepository {
     return Promise.resolve(Array.from(this.accounts.values()));
   }
 
+  get(accountId: string): Promise<Account | undefined> {
+    return Promise.resolve(this.accounts.get(accountId));
+  }
+
   generateId(): Promise<string> {
     return Promise.resolve(uuid.v4());
   }

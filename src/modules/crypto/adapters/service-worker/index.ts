@@ -1,5 +1,6 @@
-import { proxy, ProxyMarked } from "comlink";
-import { AccountService } from "../../core/ports/account.service";
+import { proxy, ProxyMarked } from 'comlink';
+
+import { AccountService } from '../../core/ports/account.service';
 
 export class ServiceWorkerAdapter {
   accountService: AccountService & ProxyMarked;

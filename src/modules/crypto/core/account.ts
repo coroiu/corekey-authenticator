@@ -1,6 +1,8 @@
 import { Entity } from '../../../common/ddd/entity';
 import { Memento } from '../../../common/ddd/memento';
+import { Code } from './code';
 import { HKey, Key, TKey } from './key';
+import { CryptoRepository } from './ports/crypto.repository';
 
 export interface State {
   readonly accountId: string;
@@ -48,6 +50,10 @@ export class Account extends Entity {
     this.name = name;
     this.issuer = issuer;
     this.key = key;
+  }
+
+  generateCode(crypto: CryptoRepository): Code {
+    return crypto.generateCode(this.key);
   }
 
   override toMemento(): AccountMemento {

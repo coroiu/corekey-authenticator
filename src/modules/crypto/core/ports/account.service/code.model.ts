@@ -1,4 +1,4 @@
 export interface Code {
   value: string;
-  expiresAt: Date;
+  expiresAt: Date | undefined;
 }

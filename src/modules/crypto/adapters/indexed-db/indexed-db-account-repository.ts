@@ -24,6 +24,24 @@ export class IndexedDbAccountRepository implements AccountRepository {
     return Object.values(schema.accounts).map(mapAccountFromDb);
   }
 
+  async get(accountId: string): Promise<Account | undefined> {
+    const schema: DbSchema | undefined = await get(dbKey);
+    if (schema === undefined) {
+      return undefined;
+    }
+
+    if (schema.version !== 0) {
+      throw new Error("Unkown schema version.");
+    }
+
+    const dto = schema.accounts[accountId];
+    if (dto === undefined) {
+      return undefined;
+    }
+
+    return mapAccountFromDb(dto);
+  }
+
   generateId(): Promise<string> {
     return Promise.resolve(uuid.v4());
   }
