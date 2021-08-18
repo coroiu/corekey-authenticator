@@ -1,3 +1,7 @@
+import { Dispatch, SetStateAction } from 'react';
+
+export type ReactState<S> = [S, Dispatch<SetStateAction<S>>];
+
 export function noop() {}
 
 export function fakeCode(length: number) {

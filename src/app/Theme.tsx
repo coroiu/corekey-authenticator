@@ -86,8 +86,8 @@ darkTheme.overrides = {
 };
 darkTheme = responsiveFontSizes(darkTheme);
 
-// const theme = lightTheme;
-const theme = darkTheme;
+const theme = lightTheme;
+// const theme = darkTheme;
 
 export type AppTheme = typeof theme;
 
