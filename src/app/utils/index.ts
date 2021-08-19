@@ -21,3 +21,7 @@ export function random(seed: number): number {
   let x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
+
+export function isNullOrEmpty(str: string): boolean {
+  return str === null || str === undefined || str.trim().length === 0;
+}
