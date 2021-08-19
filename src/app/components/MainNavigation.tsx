@@ -10,6 +10,8 @@ import SettingsApplicationsOutlinedIcon from '@material-ui/icons/SettingsApplica
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 
+import { useSlides } from '../providers/SlidesProvider';
+import NewAccountSlide from '../slides/NewAccountSlide';
 import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -38,6 +40,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 export default function MainNavigation() {
   const classes = useStyles();
   const history = useHistory();
+  const { showSlide } = useSlides();
   const [value, setValue] = useState("accounts");
 
   return (
@@ -53,11 +56,13 @@ export default function MainNavigation() {
         <BottomNavigationAction
           label="Accounts"
           value="accounts"
+          onClick={() => history.push("/accounts")}
           icon={value === "accounts" ? <LockIcon /> : <LockOutlinedIcon />}
         />
         <BottomNavigationAction
           label="Settings"
           value="settings"
+          onClick={() => history.push("/settings")}
           icon={
             value === "settings" ? (
               <SettingsApplicationsIcon />
@@ -71,7 +76,7 @@ export default function MainNavigation() {
       <Fab
         color="primary"
         className={classes.fab}
-        onClick={() => history.push("/account/new")}
+        onClick={() => showSlide(NewAccountSlide)}
         aria-label="add"
       >
         <AddIcon />

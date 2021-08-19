@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
-import { MainLayout } from '../components/MainLayout';
-import { useServiceWorkerStatus } from '../providers/ServiceWorkerProvider';
-import NewAccountPage from './account/NewAccountPage';
-import HomePage from './HomePage';
-import Sections from './sections';
+import { MainLayout } from './components/MainLayout';
+import NewAccountPage from './pages/account/NewAccountPage';
+import HomePage from './pages/HomePage';
+import { useServiceWorkerStatus } from './providers/ServiceWorkerProvider';
 
 export default function Pages() {
   const { isReady } = useServiceWorkerStatus();
@@ -28,7 +27,6 @@ export default function Pages() {
             <Redirect to="/"></Redirect>
           </Route>
         </Switch>
-        <Sections />
       </MainLayout>
     </BrowserRouter>
   );

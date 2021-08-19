@@ -2,8 +2,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
 import React from 'react';
 
-import Pages from './pages';
+import Pages from './Pages';
 import { ServiceWorkerProvider } from './providers/ServiceWorkerProvider';
+import { SlidesProvider } from './providers/SlidesProvider';
 import { theme } from './Theme';
 
 function App() {
@@ -11,7 +12,9 @@ function App() {
     <ServiceWorkerProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline>
-          <Pages></Pages>
+          <SlidesProvider>
+            <Pages></Pages>
+          </SlidesProvider>
         </CssBaseline>
       </ThemeProvider>
     </ServiceWorkerProvider>
