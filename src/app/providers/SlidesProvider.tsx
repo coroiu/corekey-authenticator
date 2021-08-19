@@ -10,7 +10,9 @@ import { PropsWithChildren, useState } from 'react';
 
 import { AppTheme } from '../Theme';
 
-export interface SlideProps {}
+export interface SlideProps {
+  close: () => void;
+}
 
 export interface Slide {
   title: string;
@@ -62,27 +64,45 @@ const Context = React.createContext<SlidesContext | null>(null);
 
 export function SlidesProvider({ children }: PropsWithChildren<{}>) {
   const classes = useStyles();
+  const [open, setOpen] = useState<boolean>(false);
   const [slide, setSlide] = useState<Slide | null>(null);
 
   const context: SlidesContext = {
-    showSlide: setSlide,
+    showSlide: (slide) => {
+      setSlide(slide);
+      setOpen(true);
+    },
   };
+
+  function onAnimationEnd() {
+    if (open === false) {
+      setSlide(null);
+    }
+  }
+
+  function close() {
+    setOpen(false);
+  }
+
   return (
     <Context.Provider value={context}>
       {children}
-      {slide === null ? null : (
-        <Drawer
-          anchor="bottom"
-          open={slide !== null}
-          onClose={() => setSlide(null)}
-          PaperProps={{
-            className: classes.drawerPaper,
-          }}
-        >
-          <SlideHeader title={slide.title} close={() => setSlide(null)} />
-          <slide.element />
-        </Drawer>
-      )}
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={close}
+        onAnimationEnd={onAnimationEnd}
+        PaperProps={{
+          className: classes.drawerPaper,
+        }}
+      >
+        {slide === null ? null : (
+          <>
+            <SlideHeader title={slide.title} close={close} />
+            <slide.element close={close} />
+          </>
+        )}
+      </Drawer>
     </Context.Provider>
   );
 }
