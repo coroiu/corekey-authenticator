@@ -1,7 +1,7 @@
 interface KeyBase {
   secret: string;
-  length?: number;
-  method?: "sha1" | "sha256" | "sha512";
+  length: number;
+  method: "sha1" | "sha256" | "sha512";
 }
 
 export interface HKey extends KeyBase {

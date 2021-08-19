@@ -48,7 +48,9 @@ export interface AccountCardProps {
 export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
   const serviceWorker = useServiceWorker();
-  const [codeProps, setCodeProps] = useState<CodeProps | null>(null);
+  const [codeProps, setCodeProps] = useState<CodeProps>({
+    code: " ".repeat(account.key.length),
+  });
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
@@ -59,7 +61,7 @@ export default function AccountCard({ account }: AccountCardProps) {
           account.id
         );
       if (code === undefined) {
-        return setCodeProps(null);
+        throw new Error(`Could not generate code for account: ${account.id}`);
       }
 
       if (code.expiresAt === undefined) {
