@@ -27,6 +27,16 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   drawerPaper: {
     height: "100%",
   },
+  content: {
+    height: "100%",
+    transition: theme.transitions.create(["transform"], {
+      duration: theme.transitions.duration.enteringScreen,
+      easing: theme.transitions.easing.easeOut,
+    }),
+  },
+  covered: {
+    transform: "scale(0.85, 0.85)",
+  },
 }));
 
 interface SlideHeaderProps {
@@ -86,7 +96,9 @@ export function SlidesProvider({ children }: PropsWithChildren<{}>) {
 
   return (
     <Context.Provider value={context}>
-      {children}
+      <div className={`${classes.content} ${open ? classes.covered : ""}`}>
+        {children}
+      </div>
       <Drawer
         anchor="bottom"
         open={open}
