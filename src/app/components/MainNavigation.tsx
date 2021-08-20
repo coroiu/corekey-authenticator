@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { useSlides } from '../providers/SlidesProvider';
-import NewAccountSlide from '../slides/NewAccountSlide';
+import NewAccountManualInputSlide from '../slides/NewAccountManualInputSlide';
 import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -76,7 +76,7 @@ export default function MainNavigation() {
       <Fab
         color="primary"
         className={classes.fab}
-        onClick={() => showSlide(NewAccountSlide)}
+        onClick={() => showSlide(NewAccountManualInputSlide)}
         aria-label="add"
       >
         <AddIcon />

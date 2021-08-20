@@ -10,7 +10,7 @@ import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { Slide, SlideProps } from '../providers/SlidesProvider';
 import { isNullOrEmpty } from '../utils';
 
-function NewAccountSlide({ close }: SlideProps) {
+function NewAccountManualInputSlide({ close }: SlideProps) {
   const accountState = useState<NewAccount>({
     name: "",
     issuer: "",
@@ -58,5 +58,5 @@ function NewAccountSlide({ close }: SlideProps) {
 
 export default {
   title: "New account",
-  element: NewAccountSlide,
+  element: NewAccountManualInputSlide,
 } as Slide;
