@@ -16,6 +16,7 @@
     "comlink": "^4.3.1",
     "idb-keyval": "^5.1.3",
     "otp": "^1.0.1",
+    "qr-scanner": "^1.3.0",
     "react": "^17.0.2",
     "react-async": "^10.0.1",
     "react-dom": "^17.0.2",
@@ -49,6 +50,7 @@
     "serve": "serve -n -s build -l 3000",
     "watch": "cra-build-watch",
     "build": "react-scripts build",
+    "postbuild": "cp ./node_modules/qr-scanner/qr-scanner-worker.min.js* ./build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
