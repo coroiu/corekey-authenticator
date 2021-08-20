@@ -5,6 +5,7 @@ import React from 'react';
 import Pages from './Pages';
 import { ServiceWorkerProvider } from './providers/ServiceWorkerProvider';
 import { SlidesProvider } from './providers/SlidesProvider';
+import { SnackbarProvider } from './providers/SnackbarProvider';
 import { theme } from './Theme';
 
 function App() {
@@ -12,9 +13,11 @@ function App() {
     <ServiceWorkerProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline>
-          <SlidesProvider>
-            <Pages></Pages>
-          </SlidesProvider>
+          <SnackbarProvider>
+            <SlidesProvider>
+              <Pages></Pages>
+            </SlidesProvider>
+          </SnackbarProvider>
         </CssBaseline>
       </ThemeProvider>
     </ServiceWorkerProvider>

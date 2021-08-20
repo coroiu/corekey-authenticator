@@ -3,6 +3,7 @@ import QrScanner from 'qr-scanner';
 import { useEffect, useRef, useState } from 'react';
 
 import { Slide, SlideProps, useSlides } from '../providers/SlidesProvider';
+import { useSnackbar } from '../providers/SnackbarProvider';
 import { AppTheme } from '../Theme';
 import NewAccountManualInputSlide from './NewAccountManualInputSlide';
 
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 function NewAccountCodeScanSlide({ close }: SlideProps) {
   const classes = useStyles();
   const { showSlide } = useSlides();
+  const { showSnackbar } = useSnackbar();
   const videoElRef = useRef<HTMLVideoElement | null>(null);
   const qrScannerRef = useRef<QrScanner | null>();
 
@@ -39,6 +41,7 @@ function NewAccountCodeScanSlide({ close }: SlideProps) {
       try {
         await qrScannerRef.current.start();
       } catch (ex) {
+        showSnackbar({ message: "Camera not available, using manual input." });
         showSlide(NewAccountManualInputSlide);
       }
     })();
