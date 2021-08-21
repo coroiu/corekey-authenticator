@@ -10,7 +10,7 @@ export interface State {
     readonly type: "hkey" | "tkey";
     readonly secret: string;
     readonly length: number;
-    readonly method: string;
+    readonly method: "sha1" | "sha256" | "sha512";
     readonly counter?: number;
   };
 }

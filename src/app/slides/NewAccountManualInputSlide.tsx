@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
 import { useAsync } from 'react-async';
@@ -8,9 +9,17 @@ import MainContainer from '../components/MainContainer';
 import ManualAccountInput from '../components/ManualAccountInput';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { Slide, SlideProps } from '../providers/SlidesProvider';
+import { AppTheme } from '../Theme';
 import { isNullOrEmpty } from '../utils';
 
+const useStyles = makeStyles((theme: AppTheme) => ({
+  create: {
+    marginBottom: theme.spacing(2),
+  },
+}));
+
 function NewAccountManualInputSlide({ close }: SlideProps) {
+  const classes = useStyles();
   const accountState = useState<NewAccount>({
     name: "",
     issuer: "",
@@ -42,6 +51,7 @@ function NewAccountManualInputSlide({ close }: SlideProps) {
     <MainContainer>
       <ManualAccountInput accountState={accountState} />
       <Button
+        className={classes.create}
         variant="contained"
         color="primary"
         size="large"

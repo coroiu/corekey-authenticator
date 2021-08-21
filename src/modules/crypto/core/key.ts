@@ -4,7 +4,7 @@ export abstract class Key {
   constructor(
     public readonly secret: string,
     public readonly length: number,
-    public readonly method: string
+    public readonly method: Method
   ) {
     if (!secret.trim()) {
       throw new Error("Empty secret not allowed.");
@@ -16,7 +16,7 @@ export class HKey extends Key {
   constructor(
     secret: string,
     length: number,
-    method: string,
+    method: Method,
     private _counter: number = 0
   ) {
     super(secret, length, method);
