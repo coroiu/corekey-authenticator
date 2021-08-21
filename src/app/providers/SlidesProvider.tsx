@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useContext } from 'react';
 import { PropsWithChildren, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { AppTheme } from '../Theme';
 
@@ -67,31 +68,89 @@ function SlideHeader({ title, close }: SlideHeaderProps) {
 }
 
 export interface SlidesContext {
-  showSlide: (slide: Slide) => void;
+  showSlide: (
+    slide: Slide,
+    options?: { replaceCurrentSlide?: boolean }
+  ) => void;
 }
+
+interface SlidesProviderState {
+  stack: Slide[];
+}
+
+const initialState: SlidesProviderState = {
+  stack: [],
+};
 
 const Context = React.createContext<SlidesContext | null>(null);
 
 export function SlidesProvider({ children }: PropsWithChildren<{}>) {
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation<{ currentSlide?: number }>();
   const [open, setOpen] = useState<boolean>(false);
-  const [slide, setSlide] = useState<Slide | null>(null);
+  const [state, setState] = useState<SlidesProviderState>(initialState);
+
+  const currentSlideInState = location.state?.currentSlide;
+  let currentSlideIndex: number;
+  if (
+    currentSlideInState === undefined ||
+    currentSlideInState < 0 ||
+    state.stack.length === 0
+  ) {
+    currentSlideIndex = -1;
+  } else if (currentSlideInState > state.stack.length - 1) {
+    currentSlideIndex = state.stack.length - 1;
+  } else {
+    currentSlideIndex = currentSlideInState;
+  }
 
   const context: SlidesContext = {
-    showSlide: (slide) => {
-      setSlide(slide);
+    showSlide: (slide, { replaceCurrentSlide = false } = {}) => {
+      setState((oldState) => {
+        if (replaceCurrentSlide) {
+          if (currentSlideIndex < 0) {
+            throw new Error("There is no slide to replace.");
+          }
+          history.replace({
+            state: { currentSlide: currentSlideIndex },
+          });
+          return {
+            stack: [
+              ...oldState.stack.slice(0, Math.max(0, currentSlideIndex)), // throw away the rest of the forward history and the current slide
+              slide,
+            ],
+          };
+        } else {
+          history.push({
+            state: { currentSlide: currentSlideIndex + 1 },
+          });
+          return {
+            stack: [
+              ...oldState.stack.slice(0, Math.max(0, currentSlideIndex + 1)), // throw away the rest of the forward history
+              slide,
+            ],
+          };
+        }
+      });
       setOpen(true);
     },
   };
 
   function onAnimationEnd() {
     if (open === false) {
-      setSlide(null);
+      setState(initialState);
     }
   }
 
   function close() {
     setOpen(false);
+  }
+
+  const slide = currentSlideIndex < 0 ? null : state.stack[currentSlideIndex];
+
+  if (slide === null && open) {
+    close();
   }
 
   return (

@@ -84,7 +84,7 @@ function NewAccountCodeScanSlide({ close }: SlideProps) {
         await qrScannerRef.current.start();
       } catch (ex) {
         showSnackbar({ message: "Camera not available, using manual input." });
-        showSlide(NewAccountManualInputSlide);
+        showSlide(NewAccountManualInputSlide, { replaceCurrentSlide: true });
       }
     })();
 

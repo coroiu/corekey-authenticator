@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { MainLayout } from './components/MainLayout';
 import HomePage from './pages/HomePage';
@@ -13,17 +13,15 @@ export default function Pages() {
   }
 
   return (
-    <BrowserRouter>
-      <MainLayout>
-        <Switch>
-          <Route exact path="/">
-            <HomePage></HomePage>
-          </Route>
-          <Route path="*">
-            <Redirect to="/"></Redirect>
-          </Route>
-        </Switch>
-      </MainLayout>
-    </BrowserRouter>
+    <MainLayout>
+      <Switch>
+        <Route exact path="/">
+          <HomePage></HomePage>
+        </Route>
+        <Route path="*">
+          <Redirect to="/"></Redirect>
+        </Route>
+      </Switch>
+    </MainLayout>
   );
 }
