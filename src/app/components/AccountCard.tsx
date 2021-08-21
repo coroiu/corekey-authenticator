@@ -104,7 +104,7 @@ export default function AccountCard({ account }: AccountCardProps) {
       className={classes.root}
       elevation={0}
       component={Paper}
-      onClick={() => showSlide(AccountDetailsSlide(account.id))}
+      onClick={() => showSlide(AccountDetailsSlide({ accountId: account.id }))}
     >
       <div className={classes.content}>
         <div className={classes.info}>

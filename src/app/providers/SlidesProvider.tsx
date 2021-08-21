@@ -11,13 +11,15 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { AppTheme } from '../Theme';
 
-export interface SlideProps {
+export interface SlideProps<ComponentProps = unknown> {
   close: () => void;
+  componentProps: ComponentProps;
 }
 
-export interface Slide {
+export interface Slide<ComponentProps = unknown> {
   title: string;
-  element: (props: SlideProps) => JSX.Element;
+  props: ComponentProps;
+  element: (slideProps: SlideProps<ComponentProps>) => JSX.Element | null;
 }
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -69,7 +71,7 @@ function SlideHeader({ title, close }: SlideHeaderProps) {
 
 export interface SlidesContext {
   showSlide: (
-    slide: Slide,
+    slide: Slide<any>,
     options?: { replaceCurrentSlide?: boolean }
   ) => void;
 }
@@ -172,7 +174,7 @@ export function SlidesProvider({ children }: PropsWithChildren<{}>) {
         {slide === null ? null : (
           <>
             <SlideHeader title={slide.title} close={close} />
-            <slide.element close={close} />
+            <slide.element componentProps={slide.props} close={close} />
           </>
         )}
       </Drawer>

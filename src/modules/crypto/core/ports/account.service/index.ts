@@ -14,19 +14,12 @@ export class AccountService {
 
   async getAllAccounts(): Promise<Account[]> {
     const allAccounts = await this.accounts.getAll();
-    return allAccounts.map(
-      (a) =>
-        ({
-          id: a.id,
-          issuer: a.issuer,
-          name: a.name,
-          key: {
-            type: a.key instanceof CoreHKey ? "hkey" : "tkey",
-            length: a.key.length,
-            method: a.key.method,
-          },
-        } as Account)
-    );
+    return allAccounts.map(mapAccount);
+  }
+
+  async getAccountById(accountId: string): Promise<Account | undefined> {
+    const account = await this.accounts.get(accountId);
+    return account === undefined ? undefined : mapAccount(account);
   }
 
   async createNewAccount(newAccount: NewAccount): Promise<void> {
@@ -63,4 +56,17 @@ export class AccountService {
       value: code.value,
     };
   }
+}
+
+function mapAccount(account: CoreAccount): Account {
+  return {
+    id: account.id,
+    issuer: account.issuer,
+    name: account.name,
+    key: {
+      type: account.key instanceof CoreHKey ? "hkey" : "tkey",
+      length: account.key.length,
+      method: account.key.method,
+    },
+  } as Account;
 }
