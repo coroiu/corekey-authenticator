@@ -137,7 +137,7 @@ export function SlidesProvider({ children }: PropsWithChildren<{}>) {
     },
   };
 
-  function onAnimationEnd() {
+  function onExited() {
     if (open === false) {
       setState(initialState);
     }
@@ -162,9 +162,11 @@ export function SlidesProvider({ children }: PropsWithChildren<{}>) {
         anchor="bottom"
         open={open}
         onClose={close}
-        onAnimationEnd={onAnimationEnd}
         PaperProps={{
           className: classes.drawerPaper,
+        }}
+        SlideProps={{
+          onExited,
         }}
       >
         {slide === null ? null : (
