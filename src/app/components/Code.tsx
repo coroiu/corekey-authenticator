@@ -23,7 +23,7 @@ const useSegmentStyles = makeStyles((theme: AppTheme) => ({
     justifyContent: "center",
     width: "100%",
     height: "100%",
-    background: ({ color }: SegmentProps) => color ?? theme.palette.grey[100],
+    background: ({ color }: SegmentProps) => color ?? theme.palette.grey[300],
   },
   character: {
     fontSize: "1rem",

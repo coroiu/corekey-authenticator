@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { ButtonBase, makeStyles } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
+import { useSlides } from '../providers/SlidesProvider';
+import AccountDetailsSlide from '../slides/AccountDetailsSlide';
 import { AppTheme } from '../Theme';
 import { random } from '../utils';
 import Code, { codeHeight, CodeProps } from './Code';
@@ -16,6 +18,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     display: "flex",
     flexDirection: "column",
     marginBottom: theme.spacing(2),
+    alignItems: "initial",
   },
   content: {
     display: "flex",
@@ -54,6 +57,7 @@ export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
   const timeout = useRef<number>();
   const serviceWorker = useServiceWorker();
+  const { showSlide } = useSlides();
   const [codeProps, setCodeProps] = useState<CodeProps>({
     code: " ".repeat(account.key.length),
   });
@@ -96,7 +100,12 @@ export default function AccountCard({ account }: AccountCardProps) {
   const codeIsEmpty = codeProps.code.trim().length === 0;
 
   return (
-    <Paper className={classes.root} elevation={0}>
+    <ButtonBase
+      className={classes.root}
+      elevation={0}
+      component={Paper}
+      onClick={() => showSlide(AccountDetailsSlide(account.id))}
+    >
       <div className={classes.content}>
         <div className={classes.info}>
           <Typography variant="h4" component="h3" className={classes.issuer}>
@@ -121,7 +130,10 @@ export default function AccountCard({ account }: AccountCardProps) {
             fullWidth
             variant="outlined"
             className={classes.generate}
-            onClick={generateCode}
+            onClick={(event) => {
+              event.stopPropagation();
+              generateCode();
+            }}
           >
             Generate code
           </Button>
@@ -130,6 +142,6 @@ export default function AccountCard({ account }: AccountCardProps) {
           <Code {...codeProps} animateInitial={true} />
         )}
       </div>
-    </Paper>
+    </ButtonBase>
   );
 }
