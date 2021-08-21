@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   },
 }));
 
-function NewAccountCodeScanSlide({ close }: SlideProps) {
+function NewAccountScanSlide({ close }: SlideProps) {
   const classes = useStyles();
   const { showSlide } = useSlides();
   const { showSnackbar } = useSnackbar();
@@ -132,5 +132,5 @@ function NewAccountCodeScanSlide({ close }: SlideProps) {
 
 export default {
   title: "New account",
-  element: NewAccountCodeScanSlide,
+  element: NewAccountScanSlide,
 } as Slide;
