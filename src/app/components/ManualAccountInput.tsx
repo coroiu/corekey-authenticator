@@ -46,7 +46,7 @@ export interface ManualAccountInputProps {
 
 function parseInt(value: string): number | undefined {
   const int = Number.parseInt(value);
-  return int === NaN ? undefined : int;
+  return Number.isNaN(int) ? undefined : int;
 }
 
 export default function ManualAccountInput({
@@ -123,16 +123,33 @@ export default function ManualAccountInput({
           <Typography>Advanced</Typography>
         </AccordionSummary>
         <AccordionDetails>
+          <FormControl className={classes.input} variant="outlined" fullWidth>
+            <InputLabel htmlFor="key-type">Type</InputLabel>
+            <Select
+              value={account.key.type}
+              onChange={handleKeyChange("type")}
+              label="Type"
+              inputProps={{
+                name: "type",
+                id: "key-type",
+              }}
+            >
+              <MenuItem value="tkey">Time-based (TOTP)</MenuItem>
+              <MenuItem value="hkey">Event-based (HOTP)</MenuItem>
+            </Select>
+          </FormControl>
+
           <TextField
             className={classes.input}
             id="code-length"
             label="Code length"
             type="number"
-            value={account.key.length}
+            value={account.key.length ?? NaN}
             onChange={handleLengthChange}
             variant="outlined"
             fullWidth
           />
+
           <FormControl className={classes.input} variant="outlined" fullWidth>
             <InputLabel htmlFor="key-method">Method</InputLabel>
             <Select
