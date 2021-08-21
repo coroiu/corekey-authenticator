@@ -1,13 +1,15 @@
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { AppTheme } from '../Theme';
 import { random } from '../utils';
-import Code, { CodeProps } from './Code';
+import Code, { codeHeight, CodeProps } from './Code';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   root: {
@@ -37,7 +39,10 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     padding: theme.spacing(2),
   },
   code: {
-    padding: theme.spacing(0, 2, 2, 2),
+    margin: theme.spacing(0, 2, 2, 2),
+  },
+  generate: {
+    height: codeHeight,
   },
 }));
 
@@ -47,44 +52,48 @@ export interface AccountCardProps {
 
 export default function AccountCard({ account }: AccountCardProps) {
   const classes = useStyles();
+  const timeout = useRef<number>();
   const serviceWorker = useServiceWorker();
   const [codeProps, setCodeProps] = useState<CodeProps>({
     code: " ".repeat(account.key.length),
   });
 
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-
-    async function generateCode(): Promise<void> {
-      const code =
-        await serviceWorker.crypto.accountService.generateCodeForAccount(
-          account.id
-        );
-      if (code === undefined) {
-        throw new Error(`Could not generate code for account: ${account.id}`);
-      }
-
-      if (code.expiresAt === undefined) {
-        return setCodeProps({ code: code.value });
-      }
-
-      const hue = Math.ceil(
-        random(Math.ceil(code.expiresAt.getTime() / 1000)) * 360
+  async function generateCode(): Promise<void> {
+    const code =
+      await serviceWorker.crypto.accountService.generateCodeForAccount(
+        account.id
       );
-      setCodeProps({
-        code: code.value,
-        color: `hsla(${hue}, 25%, 50%, 0.15)`,
-      });
-
-      timeout = setTimeout(generateCode, code.expiresAt.getTime() - Date.now());
+    if (code === undefined) {
+      throw new Error(`Could not generate code for account: ${account.id}`);
     }
 
+    if (code.expiresAt === undefined) {
+      return setCodeProps({ code: code.value });
+    }
+
+    const hue = Math.ceil(
+      random(Math.ceil(code.expiresAt.getTime() / 1000)) * 360
+    );
+    setCodeProps({
+      code: code.value,
+      color: `hsla(${hue}, 25%, 50%, 0.15)`,
+    });
+
+    timeout.current = window.setTimeout(
+      generateCode,
+      code.expiresAt.getTime() - Date.now()
+    );
+  }
+
+  useEffect(() => {
     if (account.key.type === "tkey") {
       generateCode();
     }
 
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(timeout.current);
   }, []);
+
+  const codeIsEmpty = codeProps.code.trim().length === 0;
 
   return (
     <Paper className={classes.root} elevation={0}>
@@ -106,7 +115,20 @@ export default function AccountCard({ account }: AccountCardProps) {
         </div>
       </div>
       <div className={classes.code}>
-        {codeProps === null ? null : <Code {...codeProps} />}
+        {account.key.type === "tkey" && <Code {...codeProps} />}
+        {account.key.type === "hkey" && codeIsEmpty && (
+          <Button
+            fullWidth
+            variant="outlined"
+            className={classes.generate}
+            onClick={generateCode}
+          >
+            Generate code
+          </Button>
+        )}
+        {account.key.type === "hkey" && !codeIsEmpty && (
+          <Code {...codeProps} animateInitial={true} />
+        )}
       </div>
     </Paper>
   );

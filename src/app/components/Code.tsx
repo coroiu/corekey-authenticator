@@ -38,6 +38,7 @@ interface SegmentProps {
   character: string;
   gap: boolean;
   index: number;
+  animateInitial: boolean;
   color?: string;
 }
 
@@ -53,11 +54,11 @@ function Segment(props: SegmentProps) {
 }
 
 function AnimatedSegment(props: SegmentProps) {
-  const { index } = props;
+  const { index, animateInitial } = props;
   const classes = useSegmentStyles(props);
 
   const transitions = useTransition(props, {
-    initial: { opacity: 1, y: "0%" },
+    initial: animateInitial ? undefined : { opacity: 1, y: "0%" },
     from: { opacity: 0, y: "-100%" },
     enter: { opacity: 1, y: "0%" },
     leave: { opacity: 0, y: "50%" },
@@ -75,31 +76,41 @@ function AnimatedSegment(props: SegmentProps) {
   );
 }
 
+export const codeHeight: string = "2.5rem";
+
 const useCodeStyles = makeStyles((theme: AppTheme) => ({
   root: {
     display: "flex",
     justifyContent: "center",
-    height: "2.5rem",
+    height: codeHeight,
     gap: segmentGap,
   },
 }));
 
 export interface CodeProps {
   code: string;
+  animateInitial?: boolean;
   color?: string;
+  className?: string;
 }
 
-export default function Code({ code, color }: CodeProps) {
+export default function Code({
+  code,
+  color,
+  animateInitial = false,
+  className = "",
+}: CodeProps) {
   const classes = useCodeStyles();
   const characters = Array.from(code);
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${className}`}>
       {characters.map((character, index) => (
         <AnimatedSegment
           character={character}
           index={index}
           color={color}
+          animateInitial={animateInitial}
           gap={Math.floor((characters.length - 1) / 2) === index}
         />
       ))}

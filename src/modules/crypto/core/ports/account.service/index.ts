@@ -57,6 +57,7 @@ export class AccountService {
     }
 
     const code = this.crypto.generateCode(account.key);
+    await this.accounts.save(account);
     return {
       expiresAt: code.expiresAt,
       value: code.value,
