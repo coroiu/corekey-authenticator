@@ -39,6 +39,7 @@ interface SegmentProps {
   gap: boolean;
   index: number;
   animateInitial: boolean;
+  codeKey: string;
   color?: string;
 }
 
@@ -63,6 +64,7 @@ function AnimatedSegment(props: SegmentProps) {
     enter: { opacity: 1, y: "0%" },
     leave: { opacity: 0, y: "50%" },
     delay: index * 50,
+    key: props.codeKey,
   });
 
   return (
@@ -111,6 +113,7 @@ export default function Code({
           index={index}
           color={color}
           animateInitial={animateInitial}
+          codeKey={code}
           gap={Math.floor((characters.length - 1) / 2) === index}
         />
       ))}
