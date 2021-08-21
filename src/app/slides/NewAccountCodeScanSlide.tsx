@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -34,6 +35,12 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     "& .MuiSvgIcon-root": {
       color: theme.palette.common.white,
     },
+  },
+  manual: {
+    position: "absolute",
+    bottom: theme.spacing(2),
+    left: "50%",
+    transform: "translate(-50%, 0)",
   },
 }));
 
@@ -112,6 +119,13 @@ function NewAccountCodeScanSlide({ close }: SlideProps) {
           </Menu>
         </>
       )}
+      <Button
+        className={classes.manual}
+        variant="contained"
+        onClick={() => showSlide(NewAccountManualInputSlide)}
+      >
+        Input code manually
+      </Button>
     </div>
   );
 }
