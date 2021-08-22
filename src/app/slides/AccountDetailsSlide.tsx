@@ -1,7 +1,9 @@
+import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
+import AccountInfo from '../components/AccountInfo';
 import AutoGeneratingCode from '../components/AutoGeneratingCode';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { Slide, SlideProps } from '../providers/SlidesProvider';
@@ -9,9 +11,13 @@ import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   root: {},
-  code: {
-    margin: theme.spacing(6, 2),
+  main: {
+    padding: theme.spacing(4, 2),
   },
+  info: {
+    marginBottom: theme.spacing(2),
+  },
+  code: {},
 }));
 
 export interface AccountDetailsSlideProps {
@@ -42,9 +48,12 @@ function AccountDetailsSlide({
 
   return (
     <div className={classes.root}>
-      <div className={classes.code}>
-        <AutoGeneratingCode account={account} size="large" />
-      </div>
+      <Paper className={classes.main} square>
+        <AccountInfo className={classes.info} account={account} />
+        <div className={classes.code}>
+          <AutoGeneratingCode account={account} size="large" />
+        </div>
+      </Paper>
     </div>
   );
 }

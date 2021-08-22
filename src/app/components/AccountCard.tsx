@@ -1,6 +1,5 @@
 import { ButtonBase, makeStyles } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useEffect, useRef, useState } from 'react';
 
@@ -8,6 +7,7 @@ import { Account } from '../../modules/crypto/core/ports/account.service/account
 import { useSlides } from '../providers/SlidesProvider';
 import AccountDetailsSlide from '../slides/AccountDetailsSlide';
 import { AppTheme } from '../Theme';
+import AccountInfo from './AccountInfo';
 import AutoGeneratingCode from './AutoGeneratingCode';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
@@ -24,15 +24,6 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     flex: "1 1",
     padding: theme.spacing(2),
     minWidth: 0,
-  },
-  issuer: {
-    fontSize: "1.3rem",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
-  name: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
   },
   menu: {
     flex: "0 1",
@@ -59,18 +50,7 @@ export default function AccountCard({ account }: AccountCardProps) {
       onClick={() => showSlide(AccountDetailsSlide({ accountId: account.id }))}
     >
       <div className={classes.content}>
-        <div className={classes.info}>
-          <Typography variant="h4" component="h3" className={classes.issuer}>
-            {account.issuer}
-          </Typography>
-          <Typography
-            color="textSecondary"
-            variant="subtitle1"
-            className={classes.name}
-          >
-            {account.name}
-          </Typography>
-        </div>
+        <AccountInfo className={classes.info} account={account} />
         <div className={classes.menu}>
           <MoreHorizIcon />
         </div>
