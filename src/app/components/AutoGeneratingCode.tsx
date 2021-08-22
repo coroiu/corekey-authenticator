@@ -1,9 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { useEffect, useRef, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
-import { useServiceWorker } from '../providers/ServiceWorkerProvider';
+import { useCodes } from '../providers/CodesProvider';
 import { AppTheme } from '../Theme';
 import { random } from '../utils';
 import Code, { codeHeight, CodeProps, largeCodeHeight } from './Code';
@@ -26,46 +25,28 @@ export interface AutoGeneratingCodeProps
 export default function AutoGeneratingCode(props: AutoGeneratingCodeProps) {
   const { account } = props;
   const classes = useStyles(props);
-  const timeout = useRef<number>();
-  const serviceWorker = useServiceWorker();
-  const [codeProps, setCodeProps] = useState<CodeProps>({
-    code: " ".repeat(account.key.length),
+  const { code, generate } = useCodes(account.id, {
+    autoGenerate: account.key.type === "tkey",
   });
 
-  async function generateCode(): Promise<void> {
-    const code =
-      await serviceWorker.crypto.accountService.generateCodeForAccount(
-        account.id
+  let codeProps: CodeProps;
+  if (code === undefined) {
+    codeProps = {
+      code: " ".repeat(account.key.length),
+    };
+  } else {
+    if (code?.expiresAt === undefined) {
+      codeProps = { code: code.value };
+    } else {
+      const hue = Math.ceil(
+        random(Math.ceil(code.expiresAt.getTime() / 1000)) * 360
       );
-    if (code === undefined) {
-      throw new Error(`Could not generate code for account: ${account.id}`);
+      codeProps = {
+        code: code.value,
+        color: `hsla(${hue}, 25%, 50%, 0.15)`,
+      };
     }
-
-    if (code.expiresAt === undefined) {
-      return setCodeProps({ code: code.value });
-    }
-
-    const hue = Math.ceil(
-      random(Math.ceil(code.expiresAt.getTime() / 1000)) * 360
-    );
-    setCodeProps({
-      code: code.value,
-      color: `hsla(${hue}, 25%, 50%, 0.15)`,
-    });
-
-    timeout.current = window.setTimeout(
-      generateCode,
-      code.expiresAt.getTime() - Date.now()
-    );
   }
-
-  useEffect(() => {
-    if (account.key.type === "tkey") {
-      generateCode();
-    }
-
-    return () => clearTimeout(timeout.current);
-  }, []);
 
   const codeIsEmpty = codeProps.code.trim().length === 0;
 
@@ -79,7 +60,7 @@ export default function AutoGeneratingCode(props: AutoGeneratingCodeProps) {
           className={classes.generate}
           onClick={(event) => {
             event.stopPropagation();
-            generateCode();
+            generate();
           }}
         >
           Generate code
