@@ -25,7 +25,7 @@ export interface AutoGeneratingCodeProps
 export default function AutoGeneratingCode(props: AutoGeneratingCodeProps) {
   const { account } = props;
   const classes = useStyles(props);
-  const { code, generate } = useCodes(account.id, {
+  const { code, generate, copy } = useCodes(account.id, {
     autoGenerate: account.key.type === "tkey",
   });
 
@@ -52,7 +52,9 @@ export default function AutoGeneratingCode(props: AutoGeneratingCodeProps) {
 
   return (
     <>
-      {account.key.type === "tkey" && <Code {...codeProps} {...props} />}
+      {account.key.type === "tkey" && (
+        <Code {...codeProps} {...props} onClick={copy} />
+      )}
       {account.key.type === "hkey" && codeIsEmpty && (
         <Button
           fullWidth
@@ -67,7 +69,7 @@ export default function AutoGeneratingCode(props: AutoGeneratingCodeProps) {
         </Button>
       )}
       {account.key.type === "hkey" && !codeIsEmpty && (
-        <Code {...codeProps} {...props} animateInitial={true} />
+        <Code {...codeProps} {...props} onClick={copy} />
       )}
     </>
   );

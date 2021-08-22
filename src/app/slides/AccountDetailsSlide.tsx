@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import AccountInfo from '../components/AccountInfo';
 import AutoGeneratingCode from '../components/AutoGeneratingCode';
+import { useCodes } from '../providers/CodesProvider';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { Slide, SlideProps } from '../providers/SlidesProvider';
 import { AppTheme } from '../Theme';
@@ -48,6 +49,7 @@ function AccountDetailsSlide({
 }: SlideProps<AccountDetailsSlideProps>) {
   const classes = useStyles();
   const serviceWorker = useServiceWorker();
+  const { copy } = useCodes(accountId, { autoGenerate: false });
   const [account, setAccount] = useState<Account | null>(null);
 
   useEffect(() => {
@@ -82,7 +84,11 @@ function AccountDetailsSlide({
           size="large"
           fullWidth
         >
-          <Button className={classes.copy} startIcon={<FileCopyOutlinedIcon />}>
+          <Button
+            className={classes.copy}
+            startIcon={<FileCopyOutlinedIcon />}
+            onClick={copy}
+          >
             Copy code
           </Button>
           <Button className={classes.rename} startIcon={<EditOutlinedIcon />}>

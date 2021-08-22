@@ -1,8 +1,9 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
-import { Observable, shareReplay, Subscription, tap } from 'rxjs';
+import { firstValueFrom, Observable, shareReplay, Subscription, tap } from 'rxjs';
 
 import { Code } from '../../modules/crypto/core/ports/account.service/code.model';
 import { useServiceWorker } from './ServiceWorkerProvider';
+import { useSnackbar } from './SnackbarProvider';
 
 export interface CodesContext {
   getCode$(accountId: string): Observable<Code>;
@@ -72,6 +73,7 @@ export function CodesProvider({ children }: PropsWithChildren<{}>) {
 
 export function useCodes(accountId: string, { autoGenerate = true } = {}) {
   const value = useContext(Context);
+  const { showSnackbar } = useSnackbar();
   const subscriptionRef = useRef<Subscription>();
   if (value === null) {
     throw new Error("A required provider is not present in this context.");
@@ -82,6 +84,20 @@ export function useCodes(accountId: string, { autoGenerate = true } = {}) {
     subscriptionRef.current = value.getCode$(accountId).subscribe();
   };
 
+  const copy = async () => {
+    function doCopy(code: string) {
+      navigator.clipboard.writeText(code);
+      showSnackbar({ message: "Code copied to clipboard" });
+    }
+
+    if (value.codes[accountId] === undefined) {
+      const code = await firstValueFrom(value.getCode$(accountId));
+      doCopy(code.value);
+    } else {
+      doCopy(value.codes[accountId].value);
+    }
+  };
+
   useEffect(() => {
     if (autoGenerate) {
       subscribe();
@@ -90,5 +106,5 @@ export function useCodes(accountId: string, { autoGenerate = true } = {}) {
     return () => subscriptionRef.current?.unsubscribe();
   }, [accountId]);
 
-  return { code: value.codes[accountId], generate: subscribe };
+  return { code: value.codes[accountId], generate: subscribe, copy };
 }

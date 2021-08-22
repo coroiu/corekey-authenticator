@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { animated, useTransition } from 'react-spring';
 
 import { AppTheme } from '../Theme';
+import { noop } from '../utils';
 
 const segmentGap = "0.5rem";
 
@@ -99,6 +100,7 @@ export interface CodeProps {
   animateInitial?: boolean;
   color?: string;
   className?: string;
+  onClick?: () => void;
 }
 
 export default function Code(props: CodeProps) {
@@ -108,12 +110,18 @@ export default function Code(props: CodeProps) {
     size = "normal",
     animateInitial = false,
     className = "",
+    onClick = noop,
   } = props;
   const classes = useCodeStyles(props);
   const characters = Array.from(code);
 
+  function handleOnClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    event.stopPropagation();
+    onClick();
+  }
+
   return (
-    <div className={`${classes.root} ${className}`}>
+    <div onClick={handleOnClick} className={`${classes.root} ${className}`}>
       {characters.map((character, index) => (
         <AnimatedSegment
           character={character}
