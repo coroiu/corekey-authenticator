@@ -59,7 +59,8 @@ function AccountDetailsSlide({
   const [account, setAccount] = useState<Account | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  function deleteAccount() {
+  async function deleteAccount() {
+    await serviceWorker.crypto.accountService.deleteAccount(accountId);
     setDeleteDialogOpen(false);
     close();
   }

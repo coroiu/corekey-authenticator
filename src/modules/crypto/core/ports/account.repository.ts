@@ -5,4 +5,5 @@ export interface AccountRepository {
   get(accountId: string): Promise<Account | undefined>;
   generateId(): Promise<string>;
   save(account: Account): Promise<void>;
+  delete(accountId: string): Promise<void>;
 }

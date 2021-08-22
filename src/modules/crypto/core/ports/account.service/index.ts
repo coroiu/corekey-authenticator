@@ -56,6 +56,10 @@ export class AccountService {
       value: code.value,
     };
   }
+
+  async deleteAccount(accountId: string): Promise<void> {
+    await this.accounts.delete(accountId);
+  }
 }
 
 function mapAccount(account: CoreAccount): Account {

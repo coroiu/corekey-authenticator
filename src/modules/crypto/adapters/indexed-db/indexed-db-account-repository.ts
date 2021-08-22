@@ -56,4 +56,15 @@ export class IndexedDbAccountRepository implements AccountRepository {
       return schema;
     });
   }
+
+  delete(accountId: string): Promise<void> {
+    return update(dbKey, (schema?: DbSchema) => {
+      if (schema === undefined) {
+        schema = createSchema();
+      }
+
+      delete schema.accounts[accountId];
+      return schema;
+    });
+  }
 }

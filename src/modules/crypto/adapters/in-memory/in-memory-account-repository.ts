@@ -22,4 +22,9 @@ export class InMemoryAccountRepository implements AccountRepository {
     this.accounts.set(account.id, account);
     return Promise.resolve();
   }
+
+  delete(accountId: string): Promise<void> {
+    this.accounts.delete(accountId);
+    return Promise.resolve();
+  }
 }
