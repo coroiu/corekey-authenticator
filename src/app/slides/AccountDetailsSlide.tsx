@@ -1,5 +1,9 @@
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { useEffect, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
@@ -11,13 +15,27 @@ import { AppTheme } from '../Theme';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   root: {},
-  main: {
-    padding: theme.spacing(4, 2),
-  },
   info: {
-    marginBottom: theme.spacing(2),
+    padding: theme.spacing(4, 2),
+    marginBottom: theme.spacing(4),
   },
-  code: {},
+  code: {
+    padding: theme.spacing(4, 2),
+    marginBottom: theme.spacing(4),
+  },
+  buttonGroup: {
+    padding: theme.spacing(0, 2),
+    marginBottom: theme.spacing(4),
+  },
+  copy: {
+    height: theme.spacing(8),
+  },
+  rename: {
+    height: theme.spacing(6),
+  },
+  delete: {
+    height: theme.spacing(6),
+  },
 }));
 
 export interface AccountDetailsSlideProps {
@@ -48,12 +66,43 @@ function AccountDetailsSlide({
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.main} square>
-        <AccountInfo className={classes.info} account={account} />
-        <div className={classes.code}>
-          <AutoGeneratingCode account={account} size="large" />
-        </div>
+      <Paper className={classes.info} square>
+        <AccountInfo account={account} />
       </Paper>
+
+      <Paper className={classes.code} square>
+        <AutoGeneratingCode account={account} size="large" />
+      </Paper>
+
+      <div className={classes.buttonGroup}>
+        <ButtonGroup
+          variant="outlined"
+          orientation="vertical"
+          color="secondary"
+          size="large"
+          fullWidth
+        >
+          <Button className={classes.copy} startIcon={<FileCopyOutlinedIcon />}>
+            Copy code
+          </Button>
+          <Button className={classes.rename} startIcon={<EditOutlinedIcon />}>
+            Rename
+          </Button>
+        </ButtonGroup>
+      </div>
+
+      <div className={classes.buttonGroup}>
+        <Button
+          className={classes.delete}
+          variant="outlined"
+          color="primary"
+          size="large"
+          fullWidth
+          startIcon={<FileCopyOutlinedIcon />}
+        >
+          Delete
+        </Button>
+      </div>
     </div>
   );
 }
