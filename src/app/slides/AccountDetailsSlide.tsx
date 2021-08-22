@@ -25,7 +25,6 @@ function AccountDetailsSlide({
   const classes = useStyles();
   const serviceWorker = useServiceWorker();
   const [account, setAccount] = useState<Account | null>(null);
-  console.log(accountId);
 
   useEffect(() => {
     serviceWorker.crypto.accountService
@@ -55,5 +54,6 @@ export default (
 ): Slide<AccountDetailsSlideProps> => ({
   title: "Account details",
   element: AccountDetailsSlide,
+  paper: "inverted",
   props,
 });

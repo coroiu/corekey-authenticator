@@ -19,6 +19,7 @@ export interface SlideProps<ComponentProps = unknown> {
 export interface Slide<ComponentProps = unknown> {
   title: string;
   props: ComponentProps;
+  paper?: "normal" | "inverted";
   element: (slideProps: SlideProps<ComponentProps>) => JSX.Element | null;
 }
 
@@ -29,6 +30,10 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   },
   drawerPaper: {
     height: "100%",
+  },
+  drawerPaperInverted: {
+    height: "100%",
+    background: theme.palette.background.default,
   },
   content: {
     height: "100%",
@@ -165,7 +170,10 @@ export function SlidesProvider({ children }: PropsWithChildren<{}>) {
         open={open}
         onClose={close}
         PaperProps={{
-          className: classes.drawerPaper,
+          className:
+            slide?.paper === "inverted"
+              ? classes.drawerPaperInverted
+              : classes.drawerPaper,
         }}
         SlideProps={{
           onExited,
