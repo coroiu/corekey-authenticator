@@ -26,7 +26,8 @@ const useSegmentStyles = makeStyles((theme: AppTheme) => ({
     background: ({ color }: SegmentProps) => color ?? theme.palette.grey[300],
   },
   character: {
-    fontSize: "1rem",
+    fontSize: ({ size }: SegmentProps) =>
+      size === "normal" ? "1rem" : "1.25rem",
     fontWeight:
       theme.palette.type === "light"
         ? theme.typography.fontWeightBold
@@ -40,6 +41,7 @@ interface SegmentProps {
   index: number;
   animateInitial: boolean;
   codeKey: string;
+  size: "normal" | "large";
   color?: string;
 }
 
@@ -79,30 +81,35 @@ function AnimatedSegment(props: SegmentProps) {
 }
 
 export const codeHeight: string = "2.5rem";
+export const largeCodeHeight: string = "3rem";
 
 const useCodeStyles = makeStyles((theme: AppTheme) => ({
   root: {
     display: "flex",
     justifyContent: "center",
-    height: codeHeight,
+    height: ({ size }: CodeProps) =>
+      size === "large" ? largeCodeHeight : codeHeight,
     gap: segmentGap,
   },
 }));
 
 export interface CodeProps {
   code: string;
+  size?: "normal" | "large";
   animateInitial?: boolean;
   color?: string;
   className?: string;
 }
 
-export default function Code({
-  code,
-  color,
-  animateInitial = false,
-  className = "",
-}: CodeProps) {
-  const classes = useCodeStyles();
+export default function Code(props: CodeProps) {
+  const {
+    code,
+    color,
+    size = "normal",
+    animateInitial = false,
+    className = "",
+  } = props;
+  const classes = useCodeStyles(props);
   const characters = Array.from(code);
 
   return (
@@ -114,6 +121,7 @@ export default function Code({
           color={color}
           animateInitial={animateInitial}
           codeKey={code}
+          size={size}
           gap={Math.floor((characters.length - 1) / 2) === index}
         />
       ))}

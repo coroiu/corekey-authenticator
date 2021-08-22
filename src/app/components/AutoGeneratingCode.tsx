@@ -6,22 +6,26 @@ import { Account } from '../../modules/crypto/core/ports/account.service/account
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { AppTheme } from '../Theme';
 import { random } from '../utils';
-import Code, { codeHeight, CodeProps } from './Code';
+import Code, { codeHeight, CodeProps, largeCodeHeight } from './Code';
 
 const useStyles = makeStyles((theme: AppTheme) => ({
   generate: {
-    height: codeHeight,
+    height: ({ size }: AutoGeneratingCodeProps) =>
+      size === "large" ? largeCodeHeight : codeHeight,
   },
 }));
 
-export interface AutoGeneratingCodeProps {
+export interface AutoGeneratingCodeProps
+  extends Omit<
+    Partial<CodeProps>,
+    "code" | "animateInitial" | "color" | "key"
+  > {
   account: Account;
 }
 
-export default function AutoGeneratingCode({
-  account,
-}: AutoGeneratingCodeProps) {
-  const classes = useStyles();
+export default function AutoGeneratingCode(props: AutoGeneratingCodeProps) {
+  const { account } = props;
+  const classes = useStyles(props);
   const timeout = useRef<number>();
   const serviceWorker = useServiceWorker();
   const [codeProps, setCodeProps] = useState<CodeProps>({
@@ -67,7 +71,7 @@ export default function AutoGeneratingCode({
 
   return (
     <>
-      {account.key.type === "tkey" && <Code {...codeProps} />}
+      {account.key.type === "tkey" && <Code {...codeProps} {...props} />}
       {account.key.type === "hkey" && codeIsEmpty && (
         <Button
           fullWidth
@@ -82,7 +86,7 @@ export default function AutoGeneratingCode({
         </Button>
       )}
       {account.key.type === "hkey" && !codeIsEmpty && (
-        <Code {...codeProps} animateInitial={true} />
+        <Code {...codeProps} {...props} animateInitial={true} />
       )}
     </>
   );
