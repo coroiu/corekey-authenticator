@@ -1,11 +1,12 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
-import { Observable, shareReplay, Subscription } from 'rxjs';
+import { Observable, shareReplay, Subscription, tap } from 'rxjs';
 
 import { Code } from '../../modules/crypto/core/ports/account.service/code.model';
 import { useServiceWorker } from './ServiceWorkerProvider';
 
 export interface CodesContext {
   getCode$(accountId: string): Observable<Code>;
+  codes: { [accountId: string]: Code };
 }
 
 const Context = createContext<CodesContext | null>(null);
@@ -49,17 +50,21 @@ function createObservable(
 export function CodesProvider({ children }: PropsWithChildren<{}>) {
   const serviceWorker = useServiceWorker();
   const observablesRef = useRef<Map<string, Observable<Code>>>(new Map());
+  const [codes, setCodes] = useState<{ [accountId: string]: Code }>({});
 
   const context: CodesContext = {
     getCode$(accountId) {
       let observable = observablesRef.current.get(accountId);
       if (observable === undefined) {
-        observable = createObservable(accountId, serviceWorker);
+        observable = createObservable(accountId, serviceWorker).pipe(
+          tap((code) => setCodes((codes) => ({ ...codes, [accountId]: code })))
+        );
         observablesRef.current.set(accountId, observable);
       }
 
       return observable;
     },
+    codes,
   };
 
   return <Context.Provider value={context}>{children}</Context.Provider>;
@@ -68,14 +73,13 @@ export function CodesProvider({ children }: PropsWithChildren<{}>) {
 export function useCodes(accountId: string, { autoGenerate = true } = {}) {
   const value = useContext(Context);
   const subscriptionRef = useRef<Subscription>();
-  const [code, setCode] = useState<Code>();
   if (value === null) {
     throw new Error("A required provider is not present in this context.");
   }
 
   const subscribe = () => {
     subscriptionRef.current?.unsubscribe();
-    subscriptionRef.current = value.getCode$(accountId).subscribe(setCode);
+    subscriptionRef.current = value.getCode$(accountId).subscribe();
   };
 
   useEffect(() => {
@@ -86,5 +90,5 @@ export function useCodes(accountId: string, { autoGenerate = true } = {}) {
     return () => subscriptionRef.current?.unsubscribe();
   }, [accountId]);
 
-  return { code, generate: subscribe };
+  return { code: value.codes[accountId], generate: subscribe };
 }
