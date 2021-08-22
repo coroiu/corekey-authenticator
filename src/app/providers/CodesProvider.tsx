@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, shareReplay, Subscription } from 'rxjs';
 
 import { Code } from '../../modules/crypto/core/ports/account.service/code.model';
 import { useServiceWorker } from './ServiceWorkerProvider';
@@ -14,7 +14,7 @@ function createObservable(
   accountId: string,
   serviceWorker: ReturnType<typeof useServiceWorker>
 ): Observable<Code> {
-  return new Observable((subscriber) => {
+  const observable = new Observable<Code>((subscriber) => {
     let timeout: number;
 
     async function generateCode(): Promise<void> {
@@ -42,6 +42,8 @@ function createObservable(
 
     return () => window.clearTimeout(timeout);
   });
+
+  return observable.pipe(shareReplay(1));
 }
 
 export function CodesProvider({ children }: PropsWithChildren<{}>) {
