@@ -57,6 +57,21 @@ export class AccountService {
     };
   }
 
+  async updateAccount(
+    accountId: string,
+    updates: Partial<Pick<Account, "name" | "issuer">>
+  ): Promise<void> {
+    const account = await this.accounts.get(accountId);
+    if (account === undefined) {
+      return undefined;
+    }
+
+    account.issuer = updates.issuer ?? account.issuer;
+    account.name = updates.name ?? account.name;
+
+    await this.accounts.save(account);
+  }
+
   async deleteAccount(accountId: string): Promise<void> {
     await this.accounts.delete(accountId);
   }
