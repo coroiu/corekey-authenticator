@@ -4,6 +4,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useEffect, useRef, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
+import { useAccount } from '../hooks/UseAccountHook';
 import { useSlides } from '../providers/SlidesProvider';
 import AccountDetailsSlide from '../slides/AccountDetailsSlide';
 import { AppTheme } from '../Theme';
@@ -38,9 +39,12 @@ export interface AccountCardProps {
   account: Account;
 }
 
-export default function AccountCard({ account }: AccountCardProps) {
+export default function AccountCard(props: AccountCardProps) {
   const classes = useStyles();
   const { showSlide } = useSlides();
+  const { account, isDeleted } = useAccount(props.account);
+
+  if (isDeleted) return null;
 
   return (
     <ButtonBase
