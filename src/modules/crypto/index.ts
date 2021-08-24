@@ -6,6 +6,7 @@ import { ServiceWorkerAdapter } from './adapters/service-worker';
 import { AccountRepository } from './core/ports/account.repository';
 import { AccountService } from './core/ports/account.service';
 import { CryptoRepository } from './core/ports/crypto.repository';
+import { EventService } from './core/ports/event.service';
 
 interface ModuleDependencies {
   accountRepository: AccountRepository;
@@ -13,6 +14,8 @@ interface ModuleDependencies {
 }
 
 export class CryptoModule {
+  private readonly _eventService = EventService.create();
+
   constructor(private dependencies: DependencyMap<ModuleDependencies>) {}
 
   createServiceWorkerAdapter(
@@ -20,7 +23,8 @@ export class CryptoModule {
   ): ServiceWorkerAdapter {
     const accountService = new AccountService(
       this.dependencies.require("accountRepository"),
-      this.dependencies.require("cryptoRepository")
+      this.dependencies.require("cryptoRepository"),
+      this._eventService.emit
     );
     return new ServiceWorkerAdapter(scope, accountService);
   }

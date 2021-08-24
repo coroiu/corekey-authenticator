@@ -1,5 +1,7 @@
 import { Entity } from '../../../common/ddd/entity';
 import { Memento } from '../../../common/ddd/memento';
+import { AccountRenamed } from './events/account/account-renamed';
+import { NewAccountCreated } from './events/account/new-account-created';
 import { HKey, Key, TKey } from './key';
 
 export interface State {
@@ -19,8 +21,8 @@ class AccountMemento extends Memento.extend<State>("AccountMemento", 0) {}
 
 export class Account extends Entity {
   readonly id: string;
-  name: string;
-  issuer: string;
+  private _name: string;
+  private _issuer: string;
   key: Key;
 
   static fromMemento(memento: Memento): Account {
@@ -41,12 +43,32 @@ export class Account extends Entity {
     return new Account(state.accountId, state.name, state.issuer, key);
   }
 
-  constructor(id: string, name: string, issuer: string, key: Key) {
+  static create(id: string, name: string, issuer: string, key: Key): Account {
+    const account = new Account(id, name, issuer, key);
+    account.emit(new NewAccountCreated(account));
+    return account;
+  }
+
+  private constructor(id: string, name: string, issuer: string, key: Key) {
     super();
     this.id = id;
-    this.name = name;
-    this.issuer = issuer;
+    this._name = name;
+    this._issuer = issuer;
     this.key = key;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  get issuer() {
+    return this._issuer;
+  }
+
+  rename(name: string, issuer: string) {
+    this._name = name;
+    this._issuer = issuer;
+    this.emit(new AccountRenamed(this));
   }
 
   override toMemento(): AccountMemento {

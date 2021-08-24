@@ -1,3 +1,4 @@
+import { EmitFunction } from '../../../../../common/ddd/domain-event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey } from '../../key';
 import { AccountRepository } from '../account.repository';
@@ -9,7 +10,8 @@ import { NewAccount } from './new-account.model';
 export class AccountService {
   constructor(
     private accounts: AccountRepository,
-    private crypto: CryptoRepository
+    private crypto: CryptoRepository,
+    private emit: EmitFunction
   ) {}
 
   async getAllAccounts(): Promise<Account[]> {
@@ -34,13 +36,14 @@ export class AccountService {
       key = new CoreTKey(secret, length, method);
     }
 
-    const account = new CoreAccount(
+    const account = CoreAccount.create(
       id,
       newAccount.name,
       newAccount.issuer,
       key
     );
     await this.accounts.save(account);
+    this.emit(account);
   }
 
   async generateCodeForAccount(accountId: string): Promise<Code | undefined> {
@@ -51,6 +54,7 @@ export class AccountService {
 
     const code = this.crypto.generateCode(account.key);
     await this.accounts.save(account);
+    this.emit(account);
     return {
       expiresAt: code.expiresAt,
       value: code.value,
@@ -66,10 +70,13 @@ export class AccountService {
       return undefined;
     }
 
-    account.issuer = updates.issuer ?? account.issuer;
-    account.name = updates.name ?? account.name;
+    account.rename(
+      updates.issuer ?? account.issuer,
+      updates.name ?? account.name
+    );
 
     await this.accounts.save(account);
+    this.emit(account);
   }
 
   async deleteAccount(accountId: string): Promise<void> {
