@@ -1,17 +1,10 @@
 import { EventEmitter } from '../event-emitter';
+import { EventSource, Subscriber, Subscription } from '../event-source';
 import { DomainEvent } from './domain-event';
 import { Entity } from './entity';
 
-export interface Subscription {
-  unsubscribe: () => void;
-}
-
-export type Subscriber<T> = (e: T) => void;
-
-export type EmitFunction = DomainEventService["extractAndEmit"];
-
 export abstract class DomainEventService<OutType = DomainEvent>
-  implements EventEmitter<DomainEvent>
+  implements EventEmitter<DomainEvent>, EventSource<OutType>
 {
   private counter = 0;
   private listeners = new Map<number, Subscriber<OutType>>();
