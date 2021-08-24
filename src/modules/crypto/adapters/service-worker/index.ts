@@ -2,6 +2,7 @@ import { proxy, ProxyMarked } from 'comlink';
 
 import { Event } from '../../../../common/event';
 import { EventSource, Subscription } from '../../../../common/event-source';
+import { EventMessage } from '../../../../common/messages/event.message';
 import { AccountService } from '../../core/ports/account.service';
 
 export class ServiceWorkerAdapter {
@@ -16,7 +17,16 @@ export class ServiceWorkerAdapter {
   ) {
     this.accountService = proxy(accountService);
 
-    this.subscription = events.subscribe((event) => {});
+    this.subscription = events.subscribe(async (event) => {
+      const message: EventMessage = {
+        messageType: "event",
+        event,
+      };
+      const clients = await scope.clients.matchAll({
+        includeUncontrolled: true,
+      });
+      clients.forEach((c) => c.postMessage(message, []));
+    });
   }
 
   destroy() {
