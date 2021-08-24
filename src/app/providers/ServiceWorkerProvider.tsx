@@ -27,6 +27,7 @@ export function ServiceWorkerProvider({ children }: PropsWithChildren<{}>) {
         const messageEvent = event as MessageEvent;
         const data = messageEvent.data;
         if (isEventMessage(data)) {
+          console.log("isEventMessage", data);
           events$.current.next(data.event);
         }
       }
