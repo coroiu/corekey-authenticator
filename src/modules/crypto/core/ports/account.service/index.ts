@@ -78,8 +78,8 @@ export class AccountService {
     }
 
     account.rename(
-      updates.issuer ?? account.issuer,
-      updates.name ?? account.name
+      updates.name ?? account.name,
+      updates.issuer ?? account.issuer
     );
 
     await this.accounts.save(account);
