@@ -13,9 +13,9 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { useEffect, useRef, useState } from 'react';
 
-import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import AccountInfo from '../components/AccountInfo';
 import AutoGeneratingCode from '../components/AutoGeneratingCode';
+import { useAccount } from '../hooks/UseAccountHook';
 import { useCodes } from '../providers/CodesProvider';
 import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { Slide, SlideProps } from '../providers/SlidesProvider';
@@ -61,7 +61,7 @@ function AccountDetailsSlide({
   const classes = useStyles();
   const serviceWorker = useServiceWorker();
   const { copy } = useCodes(accountId, { autoGenerate: false });
-  const [account, setAccount] = useState<Account | null>(null);
+  const { account, isDeleted } = useAccount(accountId);
 
   const nameInput = useRef<HTMLInputElement>();
   const issuerInput = useRef<HTMLInputElement>();
@@ -83,17 +83,7 @@ function AccountDetailsSlide({
     close();
   }
 
-  useEffect(() => {
-    serviceWorker.crypto.accountService
-      .getAccountById(accountId)
-      .then((account) => {
-        if (account === undefined) {
-          return close();
-        }
-
-        setAccount(account);
-      });
-  }, [serviceWorker, setAccount]);
+  if (isDeleted) close();
 
   if (account === null) return null;
 

@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
 import { useAccount } from '../hooks/UseAccountHook';
-import { useEvents } from '../providers/ServiceWorkerProvider';
 import { useSlides } from '../providers/SlidesProvider';
 import AccountDetailsSlide from '../slides/AccountDetailsSlide';
 import { AppTheme } from '../Theme';
@@ -44,11 +43,6 @@ export default function AccountCard(props: AccountCardProps) {
   const classes = useStyles();
   const { showSlide } = useSlides();
   const { account, isDeleted } = useAccount(props.account);
-  const { event } = useEvents();
-
-  useEffect(() => {
-    console.log("event changed", event);
-  }, [event]);
 
   if (isDeleted) return null;
 
