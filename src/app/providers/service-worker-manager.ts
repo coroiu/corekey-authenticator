@@ -1,5 +1,6 @@
-import { Endpoint } from "comlink";
-import { debug } from "../../common/debug";
+import { Endpoint } from 'comlink';
+
+import { debug } from '../../common/debug';
 
 export class ServiceWorkerManager implements Endpoint {
   private listeners: EventListenerOrEventListenerObject[] = [];
