@@ -1,4 +1,4 @@
-import { EmitFunction } from '../../../../../common/ddd/domain-event-emitter';
+import { DomainEventEmitter } from '../../../../../common/ddd/domain-event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey } from '../../key';
 import { AccountRepository } from '../account.repository';
@@ -11,7 +11,7 @@ export class AccountService {
   constructor(
     private accounts: AccountRepository,
     private crypto: CryptoRepository,
-    private emit: EmitFunction
+    private emitter: DomainEventEmitter
   ) {}
 
   async getAllAccounts(): Promise<Account[]> {
@@ -43,7 +43,7 @@ export class AccountService {
       key
     );
     await this.accounts.save(account);
-    this.emit(account);
+    this.emitter.extractAndEmit(account);
   }
 
   async generateCodeForAccount(accountId: string): Promise<Code | undefined> {
@@ -54,7 +54,7 @@ export class AccountService {
 
     const code = this.crypto.generateCode(account.key);
     await this.accounts.save(account);
-    this.emit(account);
+    this.emitter.extractAndEmit(account);
     return {
       expiresAt: code.expiresAt,
       value: code.value,
@@ -76,7 +76,7 @@ export class AccountService {
     );
 
     await this.accounts.save(account);
-    this.emit(account);
+    this.emitter.extractAndEmit(account);
   }
 
   async deleteAccount(accountId: string): Promise<void> {

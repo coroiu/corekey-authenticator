@@ -1,19 +1,7 @@
 import { DomainEvent } from '../../../../common/ddd/domain-event';
-import { DomainEventEmitter } from '../../../../common/ddd/domain-event-emitter';
+import { DomainEventService } from '../../../../common/ddd/domain-event-service';
 
-export class EventService extends DomainEventEmitter {
-  static create() {
-    const instance = new EventService();
-    return {
-      service: instance,
-      emit: instance.extractAndEmit,
-    };
-  }
-
-  private constructor() {
-    super();
-  }
-
+export class EventService extends DomainEventService {
   protected map(event: DomainEvent): DomainEvent {
     return event;
   }

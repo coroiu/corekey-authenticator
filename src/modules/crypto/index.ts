@@ -14,7 +14,7 @@ interface ModuleDependencies {
 }
 
 export class CryptoModule {
-  private readonly _eventService = EventService.create();
+  private readonly _eventService = new EventService();
 
   constructor(private dependencies: DependencyMap<ModuleDependencies>) {}
 
@@ -24,9 +24,9 @@ export class CryptoModule {
     const accountService = new AccountService(
       this.dependencies.require("accountRepository"),
       this.dependencies.require("cryptoRepository"),
-      this._eventService.emit
+      this._eventService
     );
-    return new ServiceWorkerAdapter(scope, accountService);
+    return new ServiceWorkerAdapter(scope, accountService, this._eventService);
   }
 }
 
