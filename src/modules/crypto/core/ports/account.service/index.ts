@@ -1,18 +1,25 @@
-import { DomainEventEmitter } from '../../../../../common/ddd/domain-event-emitter';
+import { Event } from '../../../../../common/event';
+import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey } from '../../key';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
+import { AccountServiceEmitter } from './account-service-emitter';
 import { Account } from './account.model';
 import { Code } from './code.model';
+import { mapAccount } from './mappers';
 import { NewAccount } from './new-account.model';
 
 export class AccountService {
+  private emitter: AccountServiceEmitter;
+
   constructor(
     private accounts: AccountRepository,
     private crypto: CryptoRepository,
-    private emitter: DomainEventEmitter
-  ) {}
+    emitter: EventEmitter<Event>
+  ) {
+    this.emitter = new AccountServiceEmitter(emitter);
+  }
 
   async getAllAccounts(): Promise<Account[]> {
     const allAccounts = await this.accounts.getAll();
@@ -82,17 +89,4 @@ export class AccountService {
   async deleteAccount(accountId: string): Promise<void> {
     await this.accounts.delete(accountId);
   }
-}
-
-function mapAccount(account: CoreAccount): Account {
-  return {
-    id: account.id,
-    issuer: account.issuer,
-    name: account.name,
-    key: {
-      type: account.key instanceof CoreHKey ? "hkey" : "tkey",
-      length: account.key.length,
-      method: account.key.method,
-    },
-  } as Account;
 }
