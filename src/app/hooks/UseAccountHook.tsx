@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
+import { isAccountDeletedEvent } from '../../modules/crypto/core/ports/account.service/events/account-deleted.event';
 import { isAccountRenamedEvent } from '../../modules/crypto/core/ports/account.service/events/account-renamed.event';
-import { isNewAccountCreatedEvent } from '../../modules/crypto/core/ports/account.service/events/new-account-created.event';
 import { useEvents, useServiceWorker } from '../providers/ServiceWorkerProvider';
 
 export interface UseAccountReturnType<TAccount> {
@@ -45,12 +45,19 @@ export function useAccount(
   useEffect(() => {
     if (event === undefined) return;
 
-    if (isAccountRenamedEvent(event) || isNewAccountCreatedEvent(event)) {
+    if (isAccountRenamedEvent(event)) {
       if (event.account.id !== accountId) return;
 
       setAccount(event.account);
     }
+
+    if (isAccountDeletedEvent(event)) {
+      if (event.accountId !== accountId) return;
+
+      setIsDeleted(true);
+      setAccount(null);
+    }
   }, [event, setAccount]);
 
-  return { account, isDeleted: false };
+  return { account, isDeleted };
 }

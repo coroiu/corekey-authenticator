@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
+import { isAccountDeletedEvent } from '../../modules/crypto/core/ports/account.service/events/account-deleted.event';
 import { isNewAccountCreatedEvent } from '../../modules/crypto/core/ports/account.service/events/new-account-created.event';
 import { useEvents, useServiceWorker } from '../providers/ServiceWorkerProvider';
 
@@ -19,7 +20,14 @@ export function useAllAccounts(): { accounts: Account[] } {
     if (event === undefined) return;
 
     if (isNewAccountCreatedEvent(event)) {
-      setAccounts((a) => [...a, event.account]);
+      return setAccounts((accs) => [...accs, event.account]);
+    }
+
+    if (isAccountDeletedEvent(event)) {
+      console.log("isAccountDeletedEvent", event);
+      return setAccounts((accs) =>
+        accs.filter((a) => a.id !== event.accountId)
+      );
     }
   }, [event, setAccounts]);
 

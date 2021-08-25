@@ -1,6 +1,7 @@
 import { Event } from '../../../../../common/event';
 import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
+import { AccountDeleted } from '../../events/account/account-deleted';
 import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey } from '../../key';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
@@ -88,5 +89,6 @@ export class AccountService {
 
   async deleteAccount(accountId: string): Promise<void> {
     await this.accounts.delete(accountId);
+    this.emitter.extractAndEmit(new AccountDeleted(accountId));
   }
 }
