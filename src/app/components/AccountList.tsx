@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { Account } from '../../modules/crypto/core/ports/account.service/account.model';
-import { useServiceWorker } from '../providers/ServiceWorkerProvider';
+import { useAllAccounts } from '../hooks/UseAllAccountsHook';
 import AccountCard from './AccountCard';
 
 export default function AccountList() {
-  const serviceWorker = useServiceWorker();
-  const [accounts, setAccounts] = useState<Account[]>([]);
-
-  useEffect(() => {
-    serviceWorker.crypto.accountService.getAllAccounts().then(setAccounts);
-  }, [serviceWorker, setAccounts]);
+  const { accounts } = useAllAccounts();
 
   return (
     <>
