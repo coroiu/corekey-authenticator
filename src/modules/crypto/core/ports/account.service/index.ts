@@ -2,14 +2,14 @@ import { Event } from '../../../../../common/event';
 import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { AccountDeleted } from '../../events/account/account-deleted';
-import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey } from '../../key';
+import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey, TKey } from '../../key';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
 import { AccountServiceEmitter } from './account-service-emitter';
 import { Account } from './account.model';
 import { Code } from './code.model';
 import { mapAccount } from './mappers';
-import { NewAccount } from './new-account.model';
+import { NewAccount, NewHKey, NewTKey } from './new-account.model';
 
 export class AccountService {
   private emitter: AccountServiceEmitter;
@@ -90,5 +90,36 @@ export class AccountService {
   async deleteAccount(accountId: string): Promise<void> {
     await this.accounts.delete(accountId);
     this.emitter.extractAndEmit(new AccountDeleted(accountId));
+  }
+
+  async decodeUri(uri: string): Promise<NewAccount | undefined> {
+    const decoded = this.crypto.decodeUri(uri);
+
+    if (decoded == undefined) {
+      return undefined;
+    }
+
+    let key;
+    if (decoded.key instanceof TKey) {
+      key = {
+        type: "tkey",
+        secret: decoded.key.secret,
+        length: decoded.key.length,
+        method: decoded.key.method,
+      } as NewTKey;
+    } else {
+      key = {
+        type: "hkey",
+        secret: decoded.key.secret,
+        length: decoded.key.length,
+        method: decoded.key.method,
+      } as NewHKey;
+    }
+
+    return {
+      name: decoded.name,
+      issuer: decoded.issuer,
+      key,
+    };
   }
 }

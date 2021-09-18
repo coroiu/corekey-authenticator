@@ -1,2 +1,1 @@
-export class GeneratorService {
-}
+export class GeneratorService {}
