@@ -52,11 +52,13 @@ export class OptlibCryptoRespository implements CryptoRepository {
 
     const method = path[0];
 
-    const algorithm = url.searchParams.get("algorithm") ?? undefined;
+    const algorithm =
+      url.searchParams.get("algorithm")?.toLowerCase() ?? undefined;
     if (
       algorithm !== "sha1" &&
       algorithm !== "sha256" &&
-      algorithm !== "sha512"
+      algorithm !== "sha512" &&
+      algorithm !== undefined
     ) {
       return undefined;
     }

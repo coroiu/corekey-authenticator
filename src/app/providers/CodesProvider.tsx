@@ -97,7 +97,7 @@ export function useCodes(accountId: string, { autoGenerate = true } = {}) {
       doCopy(value.codes[accountId].value);
     }
   };
-  console.log("rendering use codes");
+
   useEffect(() => {
     if (autoGenerate) {
       subscribe();

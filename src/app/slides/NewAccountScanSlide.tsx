@@ -7,6 +7,8 @@ import SwitchCameraOutlinedIcon from '@material-ui/icons/SwitchCameraOutlined';
 import QrScanner from 'qr-scanner';
 import { useEffect, useRef, useState } from 'react';
 
+import { NewAccount } from '../../modules/crypto/core/ports/account.service/new-account.model';
+import { useServiceWorker } from '../providers/ServiceWorkerProvider';
 import { Slide, SlideProps, useSlides } from '../providers/SlidesProvider';
 import { useSnackbar } from '../providers/SnackbarProvider';
 import { AppTheme } from '../Theme';
@@ -46,6 +48,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 
 function NewAccountScanSlide({ close }: SlideProps) {
   const classes = useStyles();
+  const serviceWorker = useServiceWorker();
   const { showSlide } = useSlides();
   const { showSnackbar } = useSnackbar();
   const videoElRef = useRef<HTMLVideoElement | null>(null);
@@ -53,6 +56,7 @@ function NewAccountScanSlide({ close }: SlideProps) {
   const [cameras, setCameras] = useState<QrScanner.Camera[]>([]);
   const [cameraMenuAnchorEl, setCameraMenuAnchorEl] =
     useState<HTMLElement | null>(null);
+  const accountRef = useRef<NewAccount | null>(null);
 
   const handleCameraClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setCameraMenuAnchorEl(event.currentTarget);
@@ -67,13 +71,24 @@ function NewAccountScanSlide({ close }: SlideProps) {
     qrScannerRef.current?.setCamera(camera.id);
   };
 
+  const handleQrScan = async (result: string) => {
+    if (accountRef.current !== null) return;
+
+    const decoded = await serviceWorker.crypto.accountService.decodeUri(result);
+    if (decoded === undefined) return;
+
+    accountRef.current = decoded;
+    await serviceWorker.crypto.accountService.createNewAccount(decoded);
+    close();
+  };
+
   useEffect(() => {
     (async () => {
       if (videoElRef.current === null) return;
 
       qrScannerRef.current = new QrScanner(
         videoElRef.current,
-        (result) => console.log("decoded qr code:", result),
+        handleQrScan,
         undefined,
         undefined,
         "environment"
