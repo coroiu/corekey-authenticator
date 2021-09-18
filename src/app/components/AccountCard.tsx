@@ -18,6 +18,17 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     marginBottom: theme.spacing(2),
     alignItems: "initial",
   },
+  new: {
+    animation: `$newFadeOut 3000ms ${theme.transitions.easing.easeInOut}`,
+  },
+  "@keyframes newFadeOut": {
+    "0%": {
+      background: theme.palette.warning.main,
+    },
+    "100%": {
+      background: "initial",
+    },
+  },
   content: {
     display: "flex",
   },
@@ -37,20 +48,30 @@ const useStyles = makeStyles((theme: AppTheme) => ({
 
 export interface AccountCardProps {
   account: Account;
+  isNew?: boolean;
 }
 
 export default function AccountCard(props: AccountCardProps) {
-  const classes = useStyles();
+  const classes = useStyles(props);
   const { showSlide } = useSlides();
+  const { isNew = false } = props;
   const { account, isDeleted } = useAccount(props.account);
+  const ref = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (isNew && !isDeleted) {
+      ref.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   if (isDeleted) return null;
 
   return (
     <ButtonBase
-      className={classes.root}
+      className={`${classes.root} ${isNew ? classes.new : ""}`}
       elevation={0}
       component={Paper}
+      ref={ref}
       onClick={() => showSlide(AccountDetailsSlide({ accountId: account.id }))}
     >
       <div className={classes.content}>
