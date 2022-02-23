@@ -15,13 +15,17 @@ export class OptlibCryptoRespository implements CryptoRepository {
       const customAuthenticator = authenticator.clone({
         digits: key.length,
         algorithm: mapMethod(key.method),
+        createDigest: (algorithm, key, counter) => {
+          console.log({ algorithm, key, counter });
+          return "000000";
+        },
       });
       return new Code(
-        customAuthenticator.generate(key.secret),
+        customAuthenticator.generate("someSecret"),
         new Date(Date.now() + authenticator.timeRemaining() * 1000)
       );
     } else if (key instanceof HKey) {
-      return new Code(hotp.generate(key.secret, key.next()), undefined);
+      return new Code(hotp.generate("someSecret", key.next()), undefined);
     }
 
     throw new Error("Key not supported");
@@ -42,6 +46,10 @@ export class OptlibCryptoRespository implements CryptoRepository {
 
     if (url.protocol !== "otpauth:" || secret === null) {
       return undefined;
+    }
+
+    if (secret.trim()) {
+      throw new Error("Empty secret not allowed.");
     }
 
     const path = url.pathname.slice(2).split("/");
@@ -74,9 +82,9 @@ export class OptlibCryptoRespository implements CryptoRepository {
 
     let key;
     if (method === "totp") {
-      key = new TKey(secret, digits, algorithm);
+      key = new TKey(undefined as any, digits, algorithm);
     } else if (method === "hotp") {
-      key = new HKey(secret, digits, algorithm);
+      key = new HKey(undefined as any, digits, algorithm);
     } else {
       return undefined;
     }

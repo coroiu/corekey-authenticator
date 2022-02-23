@@ -2,7 +2,7 @@ import { Event } from '../../../../../common/event';
 import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { AccountDeleted } from '../../events/account/account-deleted';
-import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey, TKey } from '../../key';
+import { HKey as CoreHKey, Key as CoreKey, PlainSecret, SealedSecret, TKey as CoreTKey, TKey } from '../../key';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
 import { AccountServiceEmitter } from './account-service-emitter';
@@ -38,10 +38,10 @@ export class AccountService {
     let key: CoreKey;
     if (newAccount.key.type === "hkey") {
       const { secret, length = 6, method = "sha1", counter } = newAccount.key;
-      key = new CoreHKey(secret, length, method, counter);
+      key = new CoreHKey(SealedSecret.seal(secret), length, method, counter);
     } else {
       const { secret, length = 6, method = "sha1" } = newAccount.key;
-      key = new CoreTKey(secret, length, method);
+      key = new CoreTKey(SealedSecret.seal(secret), length, method);
     }
 
     const account = CoreAccount.create(
@@ -99,18 +99,25 @@ export class AccountService {
       return undefined;
     }
 
+    let secret: string;
+    if (decoded.key.secret instanceof PlainSecret) {
+      secret = decoded.key.secret.value;
+    } else {
+      throw new Error("Couldn't decode secret");
+    }
+
     let key;
     if (decoded.key instanceof TKey) {
       key = {
         type: "tkey",
-        secret: decoded.key.secret,
+        secret,
         length: decoded.key.length,
         method: decoded.key.method,
       } as NewTKey;
     } else {
       key = {
         type: "hkey",
-        secret: decoded.key.secret,
+        secret,
         length: decoded.key.length,
         method: decoded.key.method,
       } as NewHKey;
