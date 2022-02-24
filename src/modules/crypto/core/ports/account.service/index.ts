@@ -3,7 +3,7 @@ import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { AccountDeleted } from '../../events/account/account-deleted';
 import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey, TKey } from '../../key';
-import { decodeUri } from '../../utils';
+import { base32ToHexStr, decodeUri } from '../../utils';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
 import { AccountServiceEmitter } from './account-service-emitter';
@@ -36,13 +36,16 @@ export class AccountService {
   async createNewAccount(newAccount: NewAccount): Promise<void> {
     const id = await this.accounts.generateId();
 
+    // Expect secret in Base32
+    const decodedSecret = base32ToHexStr(newAccount.key.secret);
+
     let key: CoreKey;
     if (newAccount.key.type === "hkey") {
-      const { secret, length = 6, method = "sha1", counter } = newAccount.key;
-      key = new CoreHKey(secret, length, method, counter);
+      const { length = 6, method = "sha1", counter } = newAccount.key;
+      key = new CoreHKey(decodedSecret, length, method, counter);
     } else {
-      const { secret, length = 6, method = "sha1" } = newAccount.key;
-      key = new CoreTKey(secret, length, method);
+      const { length = 6, method = "sha1" } = newAccount.key;
+      key = new CoreTKey(decodedSecret, length, method);
     }
 
     const account = CoreAccount.create(

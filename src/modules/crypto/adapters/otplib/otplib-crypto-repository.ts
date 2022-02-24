@@ -1,4 +1,4 @@
-import { HashAlgorithms } from '@otplib/core';
+import { HashAlgorithms, KeyEncodings } from '@otplib/core';
 import { authenticator, hotp } from '@otplib/preset-default';
 
 import { Code } from '../../core/code';
@@ -15,13 +15,24 @@ export class OptlibCryptoRespository implements CryptoRepository {
       const customAuthenticator = authenticator.clone({
         digits: key.length,
         algorithm: mapMethod(key.method),
+        keyDecoder: (secret) => secret,
+        encoding: KeyEncodings.HEX,
       });
       return new Code(
         customAuthenticator.generate(key.secret),
         new Date(Date.now() + authenticator.timeRemaining() * 1000)
       );
     } else if (key instanceof HKey) {
-      return new Code(hotp.generate(key.secret, key.next()), undefined);
+      const customAuthenticator = hotp.clone({
+        digits: key.length,
+        algorithm: mapMethod(key.method),
+        encoding: KeyEncodings.HEX,
+      });
+
+      return new Code(
+        customAuthenticator.generate(key.secret, key.next()),
+        undefined
+      );
     }
 
     throw new Error("Key not supported");

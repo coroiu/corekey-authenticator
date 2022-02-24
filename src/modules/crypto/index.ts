@@ -49,6 +49,10 @@ export class CryptoModuleBuilder {
     this.dependencies.set("cryptoRepository", new OptlibCryptoRespository());
   }
 
+  withSubtleCrypto() {
+    this.dependencies.set("cryptoRepository", new OptlibCryptoRespository());
+  }
+
   build(): CryptoModule {
     return new CryptoModule(this.dependencies);
   }

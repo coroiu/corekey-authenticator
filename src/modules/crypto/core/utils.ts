@@ -1,3 +1,5 @@
+import base32Decode from 'base32-decode';
+
 import { HKey, Key, TKey } from './key';
 
 export function decodeUri(
@@ -71,4 +73,8 @@ export function decodeUri(
     issuer: issuer ?? "",
     key,
   };
+}
+
+export function base32ToHexStr(encoded: string): string {
+  return Buffer.from(base32Decode(encoded, "RFC4648")).toString("hex");
 }
