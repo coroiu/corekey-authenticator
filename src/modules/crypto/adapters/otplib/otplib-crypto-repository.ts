@@ -1,25 +1,63 @@
-import { HashAlgorithms } from '@otplib/core';
+import { HashAlgorithms, KeyEncodings } from '@otplib/core';
+import { authenticatorDigestAsync, hotpCreateHmacKey } from '@otplib/core-async';
 import { authenticator, hotp } from '@otplib/preset-default';
 
 import { Code } from '../../core/code';
-import { HKey, Key, Method, TKey } from '../../core/key';
+import { HKey, Key, Method, SealedSecret, TKey } from '../../core/key';
 import { CryptoRepository } from '../../core/ports/crypto.repository';
 
 export class OptlibCryptoRespository implements CryptoRepository {
-  createKey(secret: string): Key {
-    throw new Error("Method not implemented.");
+  async createKey(type: 'hkey' | 'tkey', secret: string, length: number, method: Method = "sha1", counter: number = 0): Promise<Key> {
+    const sealedSecret = await sealSecret(secret, method);
+
+    if (type === 'hkey') {
+      return new HKey(sealedSecret, length, method, counter);
+    } else {
+      return new TKey(sealedSecret, length, method);
+    }
   }
 
   generateCode(key: Key): Code {
+    let secret: SealedSecret;
+    if (key.secret instanceof SealedSecret) {
+      secret = key.secret;
+    } else {
+      throw new Error("Generating codes from plain secrets is forbidden");
+    }
+    
     if (key instanceof TKey) {
+      const unmodifiedAuthenticator = authenticator.clone({
+        digits: key.length,
+        algorithm: mapMethod(key.method),
+      });
+
+      // Override the digest generation.
+      const digest = await authenticatorDigestAsync(secret, {
+        ...authenticator.allOptions(),
+        createDigest: async (algorithm, hmacKey, counter) => 'string'; // put your async implementation
+      });
+
+      authenticator.options = { digest };
+      const token = authenticator.generate(secret);
+
       const customAuthenticator = authenticator.clone({
         digits: key.length,
         algorithm: mapMethod(key.method),
-        createDigest: (algorithm, key, counter) => {
+        createDigest: async (algorithm, key, counter) => {
           console.log({ algorithm, key, counter });
-          return "000000";
+          const encoder = new TextEncoder();
+          const decoder = new TextDecoder();
+          const data = encoder.encode(counter);
+          const signature = await crypto.subtle.sign('HMAC', secret.cryptoKey, data);
+          return decoder.decode(signature);
         },
       });
+
+      const originalCode = unmodifiedAuthenticator.generate("somesecretsauce");
+      const newCode = customAuthenticator.generate("");
+
+      console.log(originalCode, newCode);
+
       return new Code(
         customAuthenticator.generate("someSecret"),
         new Date(Date.now() + authenticator.timeRemaining() * 1000)
@@ -107,6 +145,23 @@ export class OptlibCryptoRespository implements CryptoRepository {
       key,
     };
   }
+
+}
+
+async function sealSecret(secret: string, method: Method): Promise<CryptoKey> {
+  const hmacSecret = hotpCreateHmacKey(mapMethod(method), secret, KeyEncodings.UTF8);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    Buffer.from(hmacSecret),
+    {
+      name: "HMAC",
+      hash: "SHA-1",
+    },
+    false,
+    ["sign"]
+  );
+
+  return key;
 }
 
 function mapMethod(method: Method): HashAlgorithms {

@@ -1,8 +1,14 @@
 import { Code } from '../code';
-import { Key } from '../key';
+import { Key, Method } from '../key';
 
 export interface CryptoRepository {
-  createKey(secret: string): Key;
+  createKey(
+    type: "hkey" | "tkey",
+    secret: string,
+    length: number,
+    method?: Method,
+    counter?: number
+  ): Promise<Key>;
   generateCode(key: Key): Code;
   decodeUri(
     uri: string

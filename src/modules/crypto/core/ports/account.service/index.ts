@@ -38,10 +38,19 @@ export class AccountService {
     let key: CoreKey;
     if (newAccount.key.type === "hkey") {
       const { secret, length = 6, method = "sha1", counter } = newAccount.key;
-      key = new CoreHKey(SealedSecret.seal(secret), length, method, counter);
+      key = new CoreHKey(
+        await SealedSecret.seal(secret, method),
+        length,
+        method,
+        counter
+      );
     } else {
       const { secret, length = 6, method = "sha1" } = newAccount.key;
-      key = new CoreTKey(SealedSecret.seal(secret), length, method);
+      key = new CoreTKey(
+        await SealedSecret.seal(secret, method),
+        length,
+        method
+      );
     }
 
     const account = CoreAccount.create(

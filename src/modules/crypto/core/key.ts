@@ -1,5 +1,7 @@
 export type Method = "sha1" | "sha256" | "sha512";
 
+// This structure needs a bit of refactoring, the method is duplicated :)
+
 export abstract class Key {
   constructor(
     public readonly secret: Secret,
@@ -36,9 +38,5 @@ export class PlainSecret {
 }
 
 export class SealedSecret {
-  static seal(secret: string): SealedSecret {
-    return new SealedSecret(undefined as any);
-  }
-
   constructor(public readonly cryptoKey: CryptoKey) {}
 }
