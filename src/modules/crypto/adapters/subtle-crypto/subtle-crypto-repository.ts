@@ -1,7 +1,7 @@
 import { Code } from '../../core/code';
 import { Key } from '../../core/key';
 import { CryptoRepository } from '../../core/ports/crypto.repository';
-import { computeHOTP } from './compute';
+import { computeTOTP } from './compute';
 
 export class OptlibCryptoRespository implements CryptoRepository {
   createKey(secret: string): Promise<Key> {
@@ -9,6 +9,6 @@ export class OptlibCryptoRespository implements CryptoRepository {
   }
 
   async generateCode(key: Key): Promise<Code> {
-    return new Code(await computeHOTP(key.secret, 0), undefined);
+    return new Code(await computeTOTP(key.secret), undefined);
   }
 }

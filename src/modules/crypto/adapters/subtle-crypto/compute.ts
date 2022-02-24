@@ -68,7 +68,7 @@ export async function computeHOTP(
   return hotpDigestToToken(hexDigest, 6);
 }
 
-function computeTOTP(secret: string) {
+export function computeTOTP(secret: string) {
   let counter = Math.floor(Date.now() / 30000);
   return computeHOTP(secret, counter);
 }
