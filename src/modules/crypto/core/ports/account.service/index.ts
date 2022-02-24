@@ -61,7 +61,7 @@ export class AccountService {
       return undefined;
     }
 
-    const code = this.crypto.generateCode(account.key);
+    const code = await this.crypto.generateCode(account.key);
     await this.accounts.save(account);
     this.emitter.extractAndEmit(account);
     return {

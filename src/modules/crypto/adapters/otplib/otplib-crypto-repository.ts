@@ -6,11 +6,11 @@ import { HKey, Key, Method, TKey } from '../../core/key';
 import { CryptoRepository } from '../../core/ports/crypto.repository';
 
 export class OptlibCryptoRespository implements CryptoRepository {
-  createKey(secret: string): Key {
+  createKey(secret: string): Promise<Key> {
     throw new Error("Method not implemented.");
   }
 
-  generateCode(key: Key): Code {
+  async generateCode(key: Key): Promise<Code> {
     if (key instanceof TKey) {
       const customAuthenticator = authenticator.clone({
         digits: key.length,
