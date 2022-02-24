@@ -2,7 +2,7 @@ import { HashAlgorithms, KeyEncodings } from '@otplib/core';
 import { authenticator, hotp } from '@otplib/preset-default';
 
 import { Code } from '../../core/code';
-import { HKey, Key, Method, TKey } from '../../core/key';
+import { Key, Method, PlainHKey, PlainTKey } from '../../core/key';
 import { CryptoRepository } from '../../core/ports/crypto.repository';
 
 export class OptlibCryptoRespository implements CryptoRepository {
@@ -11,7 +11,7 @@ export class OptlibCryptoRespository implements CryptoRepository {
   }
 
   async generateCode(key: Key): Promise<Code> {
-    if (key instanceof TKey) {
+    if (key instanceof PlainTKey) {
       const customAuthenticator = authenticator.clone({
         digits: key.length,
         algorithm: mapMethod(key.method),
@@ -22,7 +22,7 @@ export class OptlibCryptoRespository implements CryptoRepository {
         customAuthenticator.generate(key.secret),
         new Date(Date.now() + authenticator.timeRemaining() * 1000)
       );
-    } else if (key instanceof HKey) {
+    } else if (key instanceof PlainHKey) {
       const customAuthenticator = hotp.clone({
         digits: key.length,
         algorithm: mapMethod(key.method),

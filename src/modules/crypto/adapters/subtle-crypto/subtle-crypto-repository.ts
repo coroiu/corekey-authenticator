@@ -1,5 +1,5 @@
 import { Code } from '../../core/code';
-import { Key, TKey } from '../../core/key';
+import { Key, PlainTKey } from '../../core/key';
 import { CryptoRepository } from '../../core/ports/crypto.repository';
 import { computeTOTP } from './compute';
 
@@ -9,7 +9,7 @@ export class OptlibCryptoRespository implements CryptoRepository {
   }
 
   async generateCode(key: Key): Promise<Code> {
-    if (!(key instanceof TKey)) throw new Error("Key not supported");
+    if (!(key instanceof PlainTKey)) throw new Error("Key not supported");
 
     return new Code(await computeTOTP(key.secret), undefined);
   }

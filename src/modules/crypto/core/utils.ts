@@ -1,6 +1,6 @@
 import base32Decode from 'base32-decode';
 
-import { HKey, PlainKey, TKey } from './key';
+import { PlainHKey, PlainKey, PlainTKey } from './key';
 
 export function decodeUri(
   uri: string
@@ -49,9 +49,9 @@ export function decodeUri(
 
   let key;
   if (method === "totp") {
-    key = new TKey(secret, digits, algorithm);
+    key = new PlainTKey(secret, digits, algorithm);
   } else if (method === "hotp") {
-    key = new HKey(secret, digits, algorithm);
+    key = new PlainHKey(secret, digits, algorithm);
   } else {
     return undefined;
   }

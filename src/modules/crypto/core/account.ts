@@ -2,7 +2,7 @@ import { Entity } from '../../../common/ddd/entity';
 import { Memento } from '../../../common/ddd/memento';
 import { AccountRenamed } from './events/account/account-renamed';
 import { NewAccountCreated } from './events/account/new-account-created';
-import { HKey, Key, PlainKey, TKey } from './key';
+import { Key, PlainHKey, PlainKey, PlainTKey } from './key';
 
 export interface State {
   readonly accountId: string;
@@ -30,14 +30,14 @@ export class Account extends Entity {
 
     let key: Key;
     if (state.key.type === "hkey" && state.key.secret) {
-      key = new HKey(
+      key = new PlainHKey(
         state.key.secret,
         state.key.length,
         state.key.method,
         state.key.counter
       );
     } else if (state.key.type === "tkey" && state.key.secret) {
-      key = new TKey(state.key.secret, state.key.length, state.key.method);
+      key = new PlainTKey(state.key.secret, state.key.length, state.key.method);
     } else {
       throw new Error("Unsupported key type");
     }
@@ -79,11 +79,11 @@ export class Account extends Entity {
       name: this.name,
       issuer: this.issuer,
       key: {
-        type: this.key instanceof HKey ? "hkey" : "tkey",
+        type: this.key instanceof PlainHKey ? "hkey" : "tkey",
         secret: this.key instanceof PlainKey ? this.key.secret : undefined,
         length: this.key.length,
         method: this.key instanceof PlainKey ? this.key.method : undefined,
-        counter: this.key instanceof HKey ? this.key.counter : undefined,
+        counter: this.key instanceof PlainHKey ? this.key.counter : undefined,
       },
     });
   }

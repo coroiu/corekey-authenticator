@@ -2,7 +2,7 @@ import { Event } from '../../../../../common/event';
 import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { AccountDeleted } from '../../events/account/account-deleted';
-import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey, TKey } from '../../key';
+import { Key as CoreKey, PlainHKey as CoreHKey, PlainTKey as CoreTKey, PlainTKey } from '../../key';
 import { base32ToHexStr, decodeUri } from '../../utils';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
@@ -104,7 +104,7 @@ export class AccountService {
     }
 
     let key;
-    if (decoded.key instanceof TKey) {
+    if (decoded.key instanceof PlainTKey) {
       key = {
         type: "tkey",
         secret: decoded.key.secret,

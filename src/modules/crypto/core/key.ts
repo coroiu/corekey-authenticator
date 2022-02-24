@@ -20,7 +20,7 @@ export abstract class PlainKey extends Key {
   }
 }
 
-export class HKey extends PlainKey {
+export class PlainHKey extends PlainKey {
   constructor(
     secret: string,
     length: number,
@@ -39,4 +39,4 @@ export class HKey extends PlainKey {
   }
 }
 
-export class TKey extends PlainKey {}
+export class PlainTKey extends PlainKey {}

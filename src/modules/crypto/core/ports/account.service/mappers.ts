@@ -1,5 +1,5 @@
 import { Account as CoreAccount } from '../../account';
-import { HKey as CoreHKey } from '../../key';
+import { PlainHKey as CoreHKey } from '../../key';
 import { Account } from './account.model';
 
 export function mapAccount(account: CoreAccount): Account {
