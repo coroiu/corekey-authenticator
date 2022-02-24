@@ -1,18 +1,26 @@
 export type Method = "sha1" | "sha256" | "sha512";
 
 export abstract class Key {
+  constructor(public readonly length: number) {}
+
+  abstract get method(): Method;
+}
+
+export abstract class PlainKey extends Key {
   constructor(
     public readonly secret: string,
-    public readonly length: number,
+    length: number,
     public readonly method: Method = "sha1"
   ) {
+    super(length);
+
     if (!secret.trim()) {
       throw new Error("Empty secret not allowed.");
     }
   }
 }
 
-export class HKey extends Key {
+export class HKey extends PlainKey {
   constructor(
     secret: string,
     length: number,
@@ -31,4 +39,4 @@ export class HKey extends Key {
   }
 }
 
-export class TKey extends Key {}
+export class TKey extends PlainKey {}

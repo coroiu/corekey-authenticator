@@ -1,10 +1,10 @@
 import base32Decode from 'base32-decode';
 
-import { HKey, Key, TKey } from './key';
+import { HKey, PlainKey, TKey } from './key';
 
 export function decodeUri(
   uri: string
-): { name: string; issuer: string; key: Key } | undefined {
+): { name: string; issuer: string; key: PlainKey } | undefined {
   let url: URL;
 
   try {
