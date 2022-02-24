@@ -3,6 +3,7 @@ import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { AccountDeleted } from '../../events/account/account-deleted';
 import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey, TKey } from '../../key';
+import { decodeUri } from '../../utils';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
 import { AccountServiceEmitter } from './account-service-emitter';
@@ -93,7 +94,7 @@ export class AccountService {
   }
 
   async decodeUri(uri: string): Promise<NewAccount | undefined> {
-    const decoded = this.crypto.decodeUri(uri);
+    const decoded = decodeUri(uri);
 
     if (decoded == undefined) {
       return undefined;
