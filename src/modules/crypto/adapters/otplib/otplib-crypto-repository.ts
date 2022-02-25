@@ -3,11 +3,20 @@ import { authenticator, hotp } from '@otplib/preset-default';
 
 import { Code } from '../../core/code';
 import { Key, Method, PlainHKey, PlainTKey } from '../../core/key';
-import { CryptoRepository } from '../../core/ports/crypto.repository';
+import { CryptoRepository, KeyCreationParams } from '../../core/ports/crypto.repository';
 
 export class OptlibCryptoRespository implements CryptoRepository {
-  createKey(secret: string): Promise<Key> {
-    throw new Error("Method not implemented.");
+  async createKey(params: KeyCreationParams): Promise<Key> {
+    if (params.type === "hkey") {
+      return new PlainHKey(
+        params.secret,
+        params.length,
+        params.method,
+        params.counter
+      );
+    } else {
+      return new PlainTKey(params.secret, params.length, params.method);
+    }
   }
 
   async generateCode(key: Key): Promise<Code> {

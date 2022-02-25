@@ -1,7 +1,7 @@
 export type Method = "sha1" | "sha256" | "sha512";
 
 export abstract class Key {
-  constructor(public readonly length: number) {}
+  constructor(public readonly length: number = 6) {}
 
   abstract get method(): Method;
 }
@@ -9,7 +9,7 @@ export abstract class Key {
 export abstract class PlainKey extends Key {
   constructor(
     public readonly secret: string,
-    length: number,
+    length?: number,
     public readonly method: Method = "sha1"
   ) {
     super(length);
@@ -23,7 +23,7 @@ export abstract class PlainKey extends Key {
 export class PlainHKey extends PlainKey {
   constructor(
     secret: string,
-    length: number,
+    length?: number,
     method?: Method,
     private _counter: number = 0
   ) {
@@ -42,7 +42,7 @@ export class PlainHKey extends PlainKey {
 export class PlainTKey extends PlainKey {}
 
 export abstract class SealedKey extends Key {
-  constructor(public readonly cryptoKey: CryptoKey, length: number) {
+  constructor(public readonly cryptoKey: CryptoKey, length?: number) {
     super(length);
   }
 
@@ -55,7 +55,7 @@ export abstract class SealedKey extends Key {
 export class SealedHKey extends SealedKey {
   constructor(
     cryptoKey: CryptoKey,
-    length: number,
+    length?: number,
     private _counter: number = 0
   ) {
     super(cryptoKey, length);

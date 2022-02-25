@@ -1,11 +1,20 @@
 import { Code } from '../../core/code';
-import { Key, PlainTKey } from '../../core/key';
-import { CryptoRepository } from '../../core/ports/crypto.repository';
+import { Key, PlainHKey, PlainTKey } from '../../core/key';
+import { CryptoRepository, KeyCreationParams } from '../../core/ports/crypto.repository';
 import { computeTOTP } from './compute';
 
 export class OptlibCryptoRespository implements CryptoRepository {
-  createKey(secret: string): Promise<Key> {
-    throw new Error("Method not implemented.");
+  async createKey(params: KeyCreationParams): Promise<Key> {
+    if (params.type === "hkey") {
+      return new PlainHKey(
+        params.secret,
+        params.length,
+        params.method,
+        params.counter
+      );
+    } else {
+      return new PlainTKey(params.secret, params.length, params.method);
+    }
   }
 
   async generateCode(key: Key): Promise<Code> {
