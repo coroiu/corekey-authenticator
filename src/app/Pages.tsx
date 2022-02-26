@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { MainLayout } from './components/MainLayout';
+import AboutPage from './pages/AboutPage';
 import HomePage from './pages/HomePage';
 import { useServiceWorkerStatus } from './providers/ServiceWorkerProvider';
 
@@ -15,11 +16,14 @@ export default function Pages() {
   return (
     <MainLayout>
       <Switch>
-        <Route exact path="/">
+        <Route exact path="/accounts">
           <HomePage></HomePage>
         </Route>
+        <Route exact path="/about">
+          <AboutPage></AboutPage>
+        </Route>
         <Route path="*">
-          <Redirect to="/"></Redirect>
+          <Redirect to="/accounts"></Redirect>
         </Route>
       </Switch>
     </MainLayout>

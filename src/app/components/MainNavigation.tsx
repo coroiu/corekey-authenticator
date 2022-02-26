@@ -3,10 +3,10 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Fab from '@material-ui/core/Fab';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
+import InfoIcon from '@material-ui/icons/Info';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
-import SettingsApplicationsOutlinedIcon from '@material-ui/icons/SettingsApplicationsOutlined';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 
@@ -41,25 +41,24 @@ export default function MainNavigation() {
   const classes = useStyles();
   const history = useHistory();
   const { showSlide } = useSlides();
-  const [value, setValue] = useState("accounts");
+  const path = history.location.pathname;
 
   return (
     <div className={classes.root}>
-      <BottomNavigation
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-        className={classes.navigation}
-        showLabels
-      >
+      <BottomNavigation value={path} className={classes.navigation} showLabels>
         <BottomNavigationAction
           label="Accounts"
-          value="accounts"
+          value="/accounts"
           onClick={() => history.push("/accounts")}
-          icon={value === "accounts" ? <LockIcon /> : <LockOutlinedIcon />}
+          icon={path === "/accounts" ? <LockIcon /> : <LockOutlinedIcon />}
         />
         <BottomNavigationAction
+          label="About"
+          value="/about"
+          onClick={() => history.push("/about")}
+          icon={path === "/about" ? <InfoIcon /> : <InfoOutlinedIcon />}
+        />
+        {/* <BottomNavigationAction
           label="Settings"
           value="settings"
           onClick={() => history.push("/settings")}
@@ -70,9 +69,8 @@ export default function MainNavigation() {
               <SettingsApplicationsOutlinedIcon />
             )
           }
-        />
+        /> */}
       </BottomNavigation>
-
       <Fab
         color="primary"
         className={classes.fab}
