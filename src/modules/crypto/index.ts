@@ -5,6 +5,7 @@ import { InMemoryAccountRepository } from './adapters/in-memory/in-memory-accoun
 import { IndexedDbAccountRepository } from './adapters/indexed-db/indexed-db-account-repository';
 import { OptlibCryptoRespository } from './adapters/otplib/otplib-crypto-repository';
 import { ServiceWorkerAdapter } from './adapters/service-worker';
+import { SubtleCryptoRespository } from './adapters/subtle-crypto/subtle-crypto-repository';
 import { AccountRepository } from './core/ports/account.repository';
 import { AccountService } from './core/ports/account.service';
 import { CryptoRepository } from './core/ports/crypto.repository';
@@ -50,7 +51,7 @@ export class CryptoModuleBuilder {
   }
 
   withSubtleCrypto() {
-    this.dependencies.set("cryptoRepository", new OptlibCryptoRespository());
+    this.dependencies.set("cryptoRepository", new SubtleCryptoRespository());
   }
 
   build(): CryptoModule {
