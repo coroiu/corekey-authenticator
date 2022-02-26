@@ -10,8 +10,10 @@ const segmentGap = "0.5rem";
 const useSegmentStyles = makeStyles((theme: AppTheme) => ({
   root: {
     position: "relative",
-    aspectRatio: "1 / 1",
+    maxWidth: ({ size }: SegmentProps) =>
+      size === "large" ? largeCodeHeight : codeHeight,
     marginRight: ({ gap }: SegmentProps) => (gap ? segmentGap : 0),
+    flex: "1 1",
   },
   animatedDiv: {
     position: "absolute",

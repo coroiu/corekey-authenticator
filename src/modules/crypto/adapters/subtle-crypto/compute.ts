@@ -48,7 +48,8 @@ export function hotpDigestToToken(hexDigest: string, digits: number): string {
 */
 export async function computeHOTP(
   cryptoKey: CryptoKey,
-  counter: number
+  counter: number,
+  digits: number
 ): Promise<string> {
   const digest = await crypto.subtle.sign(
     "HMAC",
@@ -57,16 +58,17 @@ export async function computeHOTP(
   );
   const hexDigest = Buffer.from(digest).toString("hex");
 
-  return hotpDigestToToken(hexDigest, 6);
+  return hotpDigestToToken(hexDigest, digits);
 }
 
 export function computeTOTP(
   cryptoKey: CryptoKey,
+  digits: number,
   epoch: number = Date.now(),
   step: number = 30
 ) {
   let counter = Math.floor(epoch / (step * 1000));
-  return computeHOTP(cryptoKey, counter);
+  return computeHOTP(cryptoKey, counter, digits);
 }
 
 /**

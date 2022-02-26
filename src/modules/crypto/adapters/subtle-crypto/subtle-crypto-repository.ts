@@ -23,11 +23,17 @@ export class SubtleCryptoRespository implements CryptoRepository {
   async generateCode(key: Key): Promise<Code> {
     if (key instanceof SealedTKey) {
       const timeRemaining = new Date(Date.now() + totpTimeRemaining() * 1000);
-      return new Code(await computeTOTP(key.cryptoKey), timeRemaining);
+      return new Code(
+        await computeTOTP(key.cryptoKey, key.length),
+        timeRemaining
+      );
     }
 
     if (key instanceof SealedHKey) {
-      return new Code(await computeHOTP(key.cryptoKey, key.next()), undefined);
+      return new Code(
+        await computeHOTP(key.cryptoKey, key.next(), key.length),
+        undefined
+      );
     }
 
     throw new Error(`Key not supported: '${key}'`);
