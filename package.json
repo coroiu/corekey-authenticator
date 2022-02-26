@@ -48,7 +48,7 @@
     "start:dev:nodemon": "nodemon -e ts,tsx -i build --exec npm run start:dev:nodemon:script",
     "start:dev:nodemon:script": "npm run build && npm run serve",
     "start:dev:hot-reload": "react-scripts start",
-    "start:prd": "npm install && npm run start:dev:nodemon",
+    "start:prd": "npm install && npm run build && npm run serve",
     "serve": "serve -n -s build -l 3000",
     "watch": "cra-build-watch",
     "build": "react-scripts build",
