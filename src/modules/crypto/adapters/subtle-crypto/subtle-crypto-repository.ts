@@ -1,7 +1,7 @@
 import { Code } from '../../core/code';
 import { Key, Method, SealedHKey, SealedTKey } from '../../core/key';
 import { CryptoRepository, KeyCreationParams } from '../../core/ports/crypto.repository';
-import { computeHOTP, computeTOTP } from './compute';
+import { computeHOTP, computeTOTP, totpTimeRemaining } from './compute';
 
 export class SubtleCryptoRespository implements CryptoRepository {
   async createKey(params: KeyCreationParams): Promise<Key> {
@@ -22,7 +22,8 @@ export class SubtleCryptoRespository implements CryptoRepository {
 
   async generateCode(key: Key): Promise<Code> {
     if (key instanceof SealedTKey) {
-      return new Code(await computeTOTP(key.cryptoKey), undefined);
+      const timeRemaining = new Date(Date.now() + totpTimeRemaining() * 1000);
+      return new Code(await computeTOTP(key.cryptoKey), timeRemaining);
     }
 
     if (key instanceof SealedHKey) {

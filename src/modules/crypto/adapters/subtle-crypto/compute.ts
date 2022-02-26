@@ -60,7 +60,41 @@ export async function computeHOTP(
   return hotpDigestToToken(hexDigest, 6);
 }
 
-export function computeTOTP(cryptoKey: CryptoKey) {
-  let counter = Math.floor(Date.now() / 30000);
+export function computeTOTP(
+  cryptoKey: CryptoKey,
+  epoch: number = Date.now(),
+  step: number = 30
+) {
+  let counter = Math.floor(epoch / (step * 1000));
   return computeHOTP(cryptoKey, counter);
+}
+
+/**
+ * Calculates the number of seconds used in the current tick for TOTP.
+ *
+ * The start of a new token: `timeUsed() === 0`
+ *
+ * @param epoch - Reference: [[TOTPOptions.epoch]]
+ * @param step - Reference: [[TOTPOptions.step]]
+ */
+export function totpTimeUsed(
+  epoch: number = Date.now(),
+  step: number = 30
+): number {
+  return Math.floor(epoch / 1000) % step;
+}
+
+/**
+ * Calculates the number of seconds till next tick for TOTP.
+ *
+ * The start of a new token: `timeRemaining() === step`
+ *
+ * @param epoch - Reference: [[TOTPOptions.epoch]]
+ * @param step - Reference: [[TOTPOptions.step]]
+ */
+export function totpTimeRemaining(
+  epoch: number = Date.now(),
+  step: number = 30
+): number {
+  return step - totpTimeUsed(epoch, step);
 }
