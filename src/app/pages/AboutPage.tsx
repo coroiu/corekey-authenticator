@@ -30,8 +30,8 @@ export default function HomePage() {
         <h1>About</h1>
         <p>
           This authenticator is the work of Andreas Coroiu and started as a
-          side-project during summer vacation. It serves as proof of concept for
-          a fully featured browser-based offline-capable OTP authenticator.
+          side-project for learning React. It serves as proof of concept for a
+          fully featured browser-based offline-capable OTP authenticator.
         </p>
 
         <h2>How it works</h2>
