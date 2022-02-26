@@ -2,7 +2,8 @@ import { Event } from '../../../../../common/event';
 import { EventEmitter } from '../../../../../common/event-emitter';
 import { Account as CoreAccount } from '../../account';
 import { AccountDeleted } from '../../events/account/account-deleted';
-import { HKey as CoreHKey, Key as CoreKey, TKey as CoreTKey, TKey } from '../../key';
+import { Key as CoreKey, PlainTKey } from '../../key';
+import { base32ToHexStr, decodeUri } from '../../utils';
 import { AccountRepository } from '../account.repository';
 import { CryptoRepository } from '../crypto.repository';
 import { AccountServiceEmitter } from './account-service-emitter';
@@ -35,15 +36,13 @@ export class AccountService {
   async createNewAccount(newAccount: NewAccount): Promise<void> {
     const id = await this.accounts.generateId();
 
-    let key: CoreKey;
-    if (newAccount.key.type === "hkey") {
-      const { secret, length = 6, method = "sha1", counter } = newAccount.key;
-      key = new CoreHKey(secret, length, method, counter);
-    } else {
-      const { secret, length = 6, method = "sha1" } = newAccount.key;
-      key = new CoreTKey(secret, length, method);
-    }
+    // Expect secret in Base32
+    const decodedSecret = base32ToHexStr(newAccount.key.secret);
 
+    const key: CoreKey = await this.crypto.createKey({
+      ...newAccount.key,
+      secret: decodedSecret,
+    });
     const account = CoreAccount.create(
       id,
       newAccount.name,
@@ -60,7 +59,7 @@ export class AccountService {
       return undefined;
     }
 
-    const code = this.crypto.generateCode(account.key);
+    const code = await this.crypto.generateCode(account.key);
     await this.accounts.save(account);
     this.emitter.extractAndEmit(account);
     return {
@@ -93,14 +92,14 @@ export class AccountService {
   }
 
   async decodeUri(uri: string): Promise<NewAccount | undefined> {
-    const decoded = this.crypto.decodeUri(uri);
+    const decoded = decodeUri(uri);
 
     if (decoded == undefined) {
       return undefined;
     }
 
     let key;
-    if (decoded.key instanceof TKey) {
+    if (decoded.key instanceof PlainTKey) {
       key = {
         type: "tkey",
         secret: decoded.key.secret,

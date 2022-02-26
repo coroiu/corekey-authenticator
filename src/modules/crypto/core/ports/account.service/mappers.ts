@@ -1,5 +1,5 @@
 import { Account as CoreAccount } from '../../account';
-import { HKey as CoreHKey } from '../../key';
+import { Key, PlainHKey, PlainTKey, SealedHKey, SealedTKey } from '../../key';
 import { Account } from './account.model';
 
 export function mapAccount(account: CoreAccount): Account {
@@ -8,9 +8,19 @@ export function mapAccount(account: CoreAccount): Account {
     issuer: account.issuer,
     name: account.name,
     key: {
-      type: account.key instanceof CoreHKey ? "hkey" : "tkey",
+      type: mapKeyType(account.key),
       length: account.key.length,
       method: account.key.method,
     },
   } as Account;
+}
+
+function mapKeyType(key: Key): Account["key"]["type"] {
+  if (key instanceof PlainHKey || key instanceof SealedHKey) {
+    return "hkey";
+  } else if (key instanceof PlainTKey || key instanceof SealedTKey) {
+    return "tkey";
+  } else {
+    throw new Error(`Cannot map unknown key type ${key}`);
+  }
 }
