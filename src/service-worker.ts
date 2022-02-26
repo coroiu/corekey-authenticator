@@ -1,10 +1,11 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
-import 'workbox-precaching';
+import "workbox-precaching";
 
-import { Endpoint, expose, proxy } from 'comlink';
+import { Endpoint, expose, proxy } from "comlink";
 
-import { CryptoModuleBuilder } from './modules/crypto';
+import { CryptoModuleBuilder } from "./modules/crypto";
+import { precacheAndRoute } from "workbox-precaching";
 
 // This service worker can be customized!
 // See https://developers.google.com/web/tools/workbox/modules
@@ -30,7 +31,7 @@ const ignored = self.__WB_MANIFEST;
 // Their URLs are injected into the manifest variable below.
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
-// precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(self.__WB_MANIFEST);
 
 // // Set up App Shell-style routing, so that all navigation requests
 // // are fulfilled with your index.html shell. Learn more at
